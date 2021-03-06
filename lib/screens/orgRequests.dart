@@ -35,12 +35,12 @@ class _OrgRequests extends State<OrgRequests> {
 
   ///////
   TextEditingController checkedValue = TextEditingController();
-  TextEditingController foodname = TextEditingController();
-  TextEditingController foodtype = TextEditingController();
-  TextEditingController foodquantity = TextEditingController();
-  TextEditingController itemname = TextEditingController();
-  TextEditingController itemtype = TextEditingController();
-  TextEditingController itemquantity = TextEditingController();
+  TextEditingController name = TextEditingController();
+  // TextEditingController foodtype = TextEditingController();
+  // TextEditingController foodquantity = TextEditingController();
+  // TextEditingController itemname = TextEditingController();
+  // TextEditingController itemtype = TextEditingController();
+  TextEditingController quantity = TextEditingController();
   TextEditingController description = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isUrgent = false;
@@ -50,12 +50,8 @@ class _OrgRequests extends State<OrgRequests> {
       var url = "http://192.168.254.106/phpPractice/mobile/orgrequestapi.php";
       var response = await http.post(url, body: {
         'orgname': orgname,
-        'foodname': foodname.text,
-        'foodtype': foodtype.text,
-        'foodquantity': foodquantity.text,
-        'itemname': itemname.text,
-        'itemtype': itemtype.text,
-        'itemquantity': itemquantity.text,
+        'name': name.text,
+        'quantity': quantity.text,
         'description': description.text,
         'isUrgent': isUrgent.toString(),
         'daterequest': currentdate
@@ -109,21 +105,19 @@ class _OrgRequests extends State<OrgRequests> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     _buildOrgRequestFormField(
-                        label: "Food Name", controllerName: foodname),
+                        label: "Request Name", controllerName: name),
                     _buildOrgRequestFormField(
-                        label: "Food Type", controllerName: foodtype),
-                    _buildOrgRequestFormField(
-                        label: "Food Quantity",
-                        controllerName: foodquantity,
+                        label: "Quantity",
+                        controllerName: quantity,
                         keyType: TextInputType.number),
-                    _buildOrgRequestFormField(
-                        label: "Item Name", controllerName: itemname),
-                    _buildOrgRequestFormField(
-                        label: "Item Type", controllerName: itemtype),
-                    _buildOrgRequestFormField(
-                        label: "Item Quantity",
-                        controllerName: itemquantity,
-                        keyType: TextInputType.number),
+                    // _buildOrgRequestFormField(
+                    //     label: "Item Name", controllerName: itemname),
+                    // _buildOrgRequestFormField(
+                    //     label: "Item Type", controllerName: itemtype),
+                    // _buildOrgRequestFormField(
+                    //     label: "Item Quantity",
+                    //     controllerName: itemquantity,
+                    //     keyType: TextInputType.number),
                     _buildOrgRequestFormField(
                         label: "Description",
                         controllerName: description,

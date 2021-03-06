@@ -24,24 +24,24 @@ class _WelcomeState extends State<Welcome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: kprimaryColor),
-      drawer: Drawer(
-        child: ListView(children: [
-          DrawerHeader(
-            child: Text("Drawer Header"),
-          ),
-          ListTile(
-              title: Text("Item 1"),
-              onTap: () {
-                print("item 1");
-              }),
-          ListTile(
-              title: Text("Item 2"),
-              onTap: () {
-                print("item 2");
-              })
-        ]),
-      ),
+      // appBar: AppBar(backgroundColor: kprimaryColor),
+      // drawer: Drawer(
+      //   child: ListView(children: [
+      //     DrawerHeader(
+      //       child: Text("Drawer Header"),
+      //     ),
+      //     ListTile(
+      //         title: Text("Item 1"),
+      //         onTap: () {
+      //           print("item 1");
+      //         }),
+      //     ListTile(
+      //         title: Text("Item 2"),
+      //         onTap: () {
+      //           print("item 2");
+      //         })
+      //   ]),
+      // ),
       body: tabs[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,

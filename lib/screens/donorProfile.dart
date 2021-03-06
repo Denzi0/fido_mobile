@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fido_project/screens/donorLogin.dart';
+import 'package:fido_project/screens/donorAccount.dart';
+import 'package:flutter/cupertino.dart';
 
 class DonorProfile extends StatefulWidget {
   @override
@@ -41,25 +43,34 @@ class _DonorProfileState extends State<DonorProfile> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Center(child: username == '' ? Text('') : Text(username)),
+          Card(
+            child: Padding(
+                padding: EdgeInsets.all(24),
+                child: Center(
+                    child: username == ''
+                        ? Text('')
+                        : Text("Hello $username",
+                            style: TextStyle(fontSize: 20)))),
+          ),
           Card(
               child: ListTile(
             leading: Icon(FontAwesomeIcons.userCircle),
             title: Text('Account'),
             subtitle: Text('Edit Account details'),
             onTap: () {
-              print("my account");
+              Navigator.push(
+                  context, CupertinoPageRoute(builder: (context) => Account()));
             },
           )),
-          Card(
-              child: ListTile(
-            leading: Icon(FontAwesomeIcons.commentDots),
-            title: Text('App feedback'),
-            subtitle: Text('Write anything about us'),
-            onTap: () {
-              print("app feedback");
-            },
-          )),
+          // Card(
+          //     child: ListTile(
+          //   leading: Icon(FontAwesomeIcons.commentDots),
+          //   title: Text('App feedback'),
+          //   subtitle: Text('Write anything about us'),
+          //   onTap: () {
+          //     print("app feedback");
+          //   },
+          // )),
           Card(
               child: ListTile(
             leading: Icon(FontAwesomeIcons.questionCircle),
@@ -90,15 +101,15 @@ class _DonorProfileState extends State<DonorProfile> {
   }
 }
 
-class InputDonorProfile extends StatelessWidget {
-  const InputDonorProfile({this.username, this.textlabel});
+// class InputDonorProfile extends StatelessWidget {
+//   const InputDonorProfile({this.username, this.textlabel});
 
-  final String username;
-  final String textlabel;
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      decoration: InputDecoration(hintText: username),
-    );
-  }
-}
+//   final String username;
+//   final String textlabel;
+//   @override
+//   Widget build(BuildContext context) {
+//     return TextFormField(
+//       decoration: InputDecoration(hintText: username),
+//     );
+//   }
+// }

@@ -2,7 +2,12 @@ import 'package:fido_project/constants/constantsVariable.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fido_project/screens/home.dart';
+import 'package:fido_project/screens/match.dart';
+import 'package:flutter/cupertino.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -14,40 +19,68 @@ class FoodandItem extends StatefulWidget {
 
 class _FoodandItemState extends State<FoodandItem> {
   var _currentSelectedValue;
-  var _currencies = ["BreakFast", "Lunch", "Dinner", "Proccessed Foods"];
+  var _currencies = [
+    "Unspecified",
+    "Canned Soup",
+    "Canned Fruit",
+    "Canned goods",
+    "Canned vegetables",
+    "Canned fish",
+    "Canned beans",
+    "Canned meat",
+    "Powder Milk",
+    "Clothes",
+    "Books",
+    "Toys",
+    "Shoes",
+    "Household Items",
+    "Mattress",
+    "Both food and items"
+  ];
   String donorUsername = "";
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController foodtitle = TextEditingController();
+  TextEditingController donationtitle = TextEditingController();
 
-  TextEditingController foodname = TextEditingController();
-  TextEditingController foodquantity = TextEditingController();
+  TextEditingController donationname = TextEditingController();
+  TextEditingController donationquantity = TextEditingController();
   TextEditingController description = TextEditingController();
 
-  // void donateFood() async {
-  //   if (_formKey.currentState.validate()) {
-  //     var url = "http://192.168.254.106/phpPractice/mobile/foodDonationapi.php";
-  //     var response = await http.post(url, body: {
-  //       'donorname': donorUsername,
-  //       'foodtitle': foodtitle.text,
-  //       'foodname': foodname.text,
-  //       'foodtype': _currentSelectedValue,
-  //       'foodquantity': foodquantity.text,
-  //       'fooddescription': description.text
-  //     });
-  //     var data = json.decode(response.body);
-  //     if (data == "Success") {
-  //       Fluttertoast.showToast(
-  //           msg: "Donated",
-  //           toastLength: Toast.LENGTH_SHORT,
-  //           gravity: ToastGravity.CENTER,
-  //           timeInSecForIosWeb: 1,
-  //           backgroundColor: Colors.blue,
-  //           textColor: Colors.white,
-  //           fontSize: 16.0);
-  //     }
-  //   }
-  // }
+  void food() async {
+    var now = new DateTime.now();
+    var formatter = new DateFormat('yyyy-MM-dd');
+    String formattedDate = formatter.format(now);
+
+    ///
+    if (_formKey.currentState.validate()) {
+      print(_currentSelectedValue);
+      print(_currencies.indexOf(_currentSelectedValue));
+      var url = "http://192.168.254.106/phpPractice/mobile/Donationapi.php";
+      var response = await http.post(url, body: {
+        'donorname': donorUsername,
+        'donationname': donationname.text,
+        'donationtype': (_currencies.indexOf(_currentSelectedValue)).toString(),
+        'donationquantity': donationquantity.text,
+        'description': description.text,
+        'date': formattedDate
+      });
+      var data = json.decode(response.body);
+      if (data == "Success") {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Home()));
+        Fluttertoast.showToast(
+            msg: "Donated",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.blue,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }
+      Navigator.push(
+          context, CupertinoPageRoute(builder: (context) => Match()));
+    }
+  }
 
   Future getdonorFood() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -90,6 +123,7 @@ class _FoodandItemState extends State<FoodandItem> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text("Donation"), backgroundColor: kprimaryColor),
       body: Center(
         child: Container(
           margin: EdgeInsets.all(24),
@@ -103,9 +137,9 @@ class _FoodandItemState extends State<FoodandItem> {
                     // _buildFoodDonFormField(
                     //     label: "Food Title", name: foodtitle),
                     _buildFoodDonFormField(
-                        label: "Donation Name",
-                        name: foodname,
-                        hintName: "Milk,Food,Chair"),
+                      label: "Donation Name",
+                      name: donationname,
+                    ),
                     SizedBox(height: 20),
                     FormField<String>(
                       builder: (FormFieldState<String> state) {
@@ -142,7 +176,7 @@ class _FoodandItemState extends State<FoodandItem> {
                     _buildFoodDonFormField(
                         label: "Donation Quanity",
                         keyType: TextInputType.number,
-                        name: foodquantity),
+                        name: donationquantity),
                     SizedBox(
                       height: 20.0,
                     ),
@@ -157,10 +191,10 @@ class _FoodandItemState extends State<FoodandItem> {
                         height: 50.0,
                         child: RaisedButton(
                             onPressed: () {
-                              // donateFood();
+                              food();
                             },
                             color: kprimaryColor,
-                            child: Text("Donate",
+                            child: Text("Find Match",
                                 style: TextStyle(color: Colors.white))),
                       ),
                     ),

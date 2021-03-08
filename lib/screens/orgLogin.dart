@@ -13,6 +13,7 @@ class OrgLogin extends StatefulWidget {
 }
 
 class _OrgLoginState extends State<OrgLogin> {
+  var orgname;
   bool _isObscure = true;
   TextEditingController _orgname = TextEditingController();
   TextEditingController _orgpassword = TextEditingController();
@@ -32,7 +33,7 @@ class _OrgLoginState extends State<OrgLogin> {
       if (data == "Success") {
         // SharedPreferences logout and keep login in
         SharedPreferences preferences = await SharedPreferences.getInstance();
-        preferences.setString('orgname', _orgname.text);
+        orgname = preferences.setString('orgname', _orgname.text);
         // Up to here
         Fluttertoast.showToast(
             msg: "Successfully Login",
@@ -80,111 +81,112 @@ class _OrgLoginState extends State<OrgLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xfff8f1f1),
-      resizeToAvoidBottomPadding: false,
-      body: Container(
-        margin: EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset('assets/images/appName.png', height: 100, width: 100),
-            SizedBox(height: 20),
-            Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildOrgLoginInputField(
-                      label: "Organization name", name: _orgname),
-                  SizedBox(height: 15),
-                  _buildOrgLoginInputField(
-                      label: "Password",
-                      name: _orgpassword,
-                      iconShow: Icons.visibility,
-                      iconHide: Icons.visibility_off),
+        backgroundColor: Color(0xfff8f1f1),
+        resizeToAvoidBottomPadding: false,
+        body: Container(
+          margin: EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset('assets/images/appName.png', height: 100, width: 100),
+              SizedBox(height: 20),
+              Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildOrgLoginInputField(
+                        label: "Organization name", name: _orgname),
+                    SizedBox(height: 15),
+                    _buildOrgLoginInputField(
+                        label: "Password",
+                        name: _orgpassword,
+                        iconShow: Icons.visibility,
+                        iconHide: Icons.visibility_off),
 
-                  //sample
-                  //sample
-                  SizedBox(
-                    height: 15,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ButtonTheme(
-                      height: 50,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
+                    //sample
+                    //sample
+                    SizedBox(
+                      height: 15,
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ButtonTheme(
+                        height: 50,
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          color: kprimaryColor,
+                          textColor: Colors.white,
+                          child: Text(
+                            'Login',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          onPressed: () {
+                            orglogin();
+                            print('login');
+                          },
                         ),
-                        color: kprimaryColor,
-                        textColor: Colors.white,
-                        child: Text(
-                          'Login',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        onPressed: () {
-                          orglogin();
-                          print('login');
-                        },
                       ),
                     ),
-                  ),
-                  SizedBox(height: 10),
+                    SizedBox(height: 10),
 
-                  Row(children: <Widget>[
-                    Expanded(
-                      child: new Container(
-                          margin:
-                              const EdgeInsets.only(left: 10.0, right: 20.0),
-                          child: Divider(
-                            indent: 10.0,
-                            color: Color(0xff5b5b5b),
-                            height: 50.0,
-                          )),
-                    ),
-                    Text("OR",
-                        style: TextStyle(
-                            fontSize: 16.0, color: Color(0xffd9d9d9))),
-                    Expanded(
-                      child: new Container(
-                          margin:
-                              const EdgeInsets.only(left: 20.0, right: 10.0),
-                          child: Divider(
-                            color: Color(0xff5b5b5b),
-                            height: 50.0,
-                            endIndent: 10.0,
-                          )),
-                    ),
-                  ]),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ButtonTheme(
-                      height: 50,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
+                    Row(children: <Widget>[
+                      Expanded(
+                        child: new Container(
+                            margin:
+                                const EdgeInsets.only(left: 10.0, right: 20.0),
+                            child: Divider(
+                              indent: 10.0,
+                              color: Color(0xff5b5b5b),
+                              height: 50.0,
+                            )),
+                      ),
+                      Text("OR",
+                          style: TextStyle(
+                              fontSize: 16.0, color: Color(0xffd9d9d9))),
+                      Expanded(
+                        child: new Container(
+                            margin:
+                                const EdgeInsets.only(left: 20.0, right: 10.0),
+                            child: Divider(
+                              color: Color(0xff5b5b5b),
+                              height: 50.0,
+                              endIndent: 10.0,
+                            )),
+                      ),
+                    ]),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ButtonTheme(
+                        height: 50,
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          color: kprimaryColor,
+                          textColor: Colors.white,
+                          child: Text(
+                            'Login in as Donor',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Login()));
+                            print('login with org');
+                          },
                         ),
-                        color: kprimaryColor,
-                        textColor: Colors.white,
-                        child: Text(
-                          'Login in as Donor',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Login()));
-                          print('login with org');
-                        },
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
+            ],
+          ),
+        ));
   }
 }

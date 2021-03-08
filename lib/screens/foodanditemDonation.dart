@@ -19,24 +19,7 @@ class FoodandItem extends StatefulWidget {
 
 class _FoodandItemState extends State<FoodandItem> {
   var _currentSelectedValue;
-  var _currencies = [
-    "Unspecified",
-    "Canned Soup",
-    "Canned Fruit",
-    "Canned goods",
-    "Canned vegetables",
-    "Canned fish",
-    "Canned beans",
-    "Canned meat",
-    "Powder Milk",
-    "Clothes",
-    "Books",
-    "Toys",
-    "Shoes",
-    "Household Items",
-    "Mattress",
-    "Both food and items"
-  ];
+  var _currencies = ["Food", "Item", "Clothes", "Both Food and Item", "Others"];
   String donorUsername = "";
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();

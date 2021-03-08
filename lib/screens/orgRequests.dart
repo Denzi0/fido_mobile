@@ -53,7 +53,7 @@ class _OrgRequests extends State<OrgRequests> {
         'name': name.text,
         'quantity': quantity.text,
         'description': description.text,
-        'isUrgent': isUrgent.toString(),
+        'isUrgent': isUrgent ? '1' : '0',
         'daterequest': currentdate
       });
       var data = json.decode(response.body);
@@ -80,7 +80,7 @@ class _OrgRequests extends State<OrgRequests> {
         controller: controllerName,
         validator: (e) {
           if (e.isEmpty) {
-            return "emptyfield";
+            return "Please input Field";
           } else {
             return null;
           }
@@ -92,8 +92,10 @@ class _OrgRequests extends State<OrgRequests> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //     title: Text("Organization Request"), backgroundColor: kprimaryColor),
+      appBar: AppBar(
+          title: Text("Organization Request"),
+          backgroundColor: kprimaryColor,
+          automaticallyImplyLeading: false),
       body: Center(
         child: Container(
           margin: EdgeInsets.all(24),

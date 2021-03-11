@@ -1,5 +1,7 @@
 import 'package:fido_project/screens/foodanditemDonation.dart';
 import 'package:fido_project/screens/donorProfile.dart';
+import 'package:fido_project/screens/donationStatus.dart';
+
 import 'package:flutter/material.dart';
 import 'package:fido_project/screens/home.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -18,7 +20,7 @@ class _WelcomeState extends State<Welcome> {
     Center(child: Text("Drop-off")),
     // DonationCategory(),
     FoodandItem(),
-    Center(child: Text("Donations")),
+    Donations(),
     DonorProfile(),
   ];
   @override

@@ -29,12 +29,15 @@ dependencies:
   cupertino_icons: ^0.1.3
   font_awesome_flutter: '>= 4.7.0'
   http: ^0.12.2
+  image_picker:
   # App icon libary
   flutter_launcher_icons: ^0.8.1
   fluttertoast: ^7.1.6
   shared_preferences: ^0.5.12+4
   intl: ^0.16.1
   mailer:
+  
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

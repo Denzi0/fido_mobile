@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'package:fido_project/constants/constantsVariable.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-
+import 'package:image_picker/image_picker.dart';
+import 'package:fido_project/screens/home.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -13,6 +16,10 @@ class OrgRequests extends StatefulWidget {
 }
 
 class _OrgRequests extends State<OrgRequests> {
+  File imageFile;
+  String imageData;
+  final picker = ImagePicker();
+
   // current date time
   static final DateTime now = DateTime.now();
   static final DateFormat formatter = DateFormat('yyyy-MM-dd');
@@ -36,19 +43,41 @@ class _OrgRequests extends State<OrgRequests> {
   ///////
   TextEditingController checkedValue = TextEditingController();
   TextEditingController name = TextEditingController();
-  // TextEditingController foodtype = TextEditingController();
-  // TextEditingController foodquantity = TextEditingController();
-  // TextEditingController itemname = TextEditingController();
-  // TextEditingController itemtype = TextEditingController();
   TextEditingController quantity = TextEditingController();
   TextEditingController description = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isUrgent = false;
 
+  static const ADD_CATEGORY_URL =
+      "http://192.168.254.106/phpPractice/mobile/orgrequestapi.php";
+
+  choiceImage() async {
+    var pickedImage = await ImagePicker().getImage(
+        source: ImageSource.gallery,
+        maxHeight: 480,
+        maxWidth: 640,
+        imageQuality: 25);
+    if (pickedImage != null) {
+      setState(() {
+        imageFile = File(pickedImage.path);
+      });
+      imageData = base64Encode(imageFile.readAsBytesSync());
+
+      return imageData;
+    } else {
+      return null;
+    }
+  }
+
+  showImage(String image) {
+    return Image.memory(base64Decode(image));
+  }
+
   Future orgRequests() async {
     if (_formKey.currentState.validate()) {
-      var url = "http://192.168.254.106/phpPractice/mobile/orgrequestapi.php";
-      var response = await http.post(url, body: {
+      // var url = "http://192.168.254.106/phpPractice/mobile/orgrequestapi.php";
+      var response = await http.post(ADD_CATEGORY_URL, body: {
+        'images': imageData,
         'orgname': orgname,
         'name': name.text,
         'quantity': quantity.text,
@@ -56,6 +85,19 @@ class _OrgRequests extends State<OrgRequests> {
         'isUrgent': isUrgent ? '1' : '0',
         'daterequest': currentdate
       });
+
+      // if (response.statusCode == 200) {
+      //   print(response.body);
+      //   Fluttertoast.showToast(
+      //       msg: "Success",
+      //       toastLength: Toast.LENGTH_SHORT,
+      //       gravity: ToastGravity.CENTER,
+      //       timeInSecForIosWeb: 1,
+      //       backgroundColor: Colors.blue,
+      //       textColor: Colors.white,
+      //       fontSize: 16.0);
+      // }
+
       var data = json.decode(response.body);
       if (data == "Success") {
         Fluttertoast.showToast(
@@ -103,8 +145,8 @@ class _OrgRequests extends State<OrgRequests> {
             child: Form(
               key: _formKey,
               child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildOrgRequestFormField(
                         label: "Request Name", controllerName: name),
@@ -136,6 +178,21 @@ class _OrgRequests extends State<OrgRequests> {
                         });
                       },
                     ),
+                    IconButton(
+                        icon: Icon(FontAwesomeIcons.image),
+                        onPressed: () {
+                          // uploadImage();
+                          choiceImage();
+                        }),
+
+                    imageData == null
+                        ? Text('No image Selected')
+                        : Container(
+                            height: 200.0,
+                            width: 200.0,
+                            child: showImage(imageData),
+                          ),
+                    SizedBox(height: 10.0),
                     SizedBox(
                       width: double.infinity,
                       child: ButtonTheme(

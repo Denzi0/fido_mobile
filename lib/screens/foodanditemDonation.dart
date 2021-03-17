@@ -106,7 +106,11 @@ class _FoodandItemState extends State<FoodandItem> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Donation"), backgroundColor: kprimaryColor),
+      appBar: AppBar(
+        title: Text("Donation"),
+        backgroundColor: kprimaryColor,
+        automaticallyImplyLeading: false,
+      ),
       body: Center(
         child: Container(
           margin: EdgeInsets.all(24),

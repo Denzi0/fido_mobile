@@ -1,21 +1,107 @@
 import 'package:fido_project/constants/constantsVariable.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:fido_project/screens/donationHome.dart';
+import 'dart:async';
+import 'dart:typed_data';
 
 class Home extends StatefulWidget {
+  static const LOAD_CATEGORY_URL =
+      'http://192.168.254.106/phpPractice/mobile/requestApi.php';
+
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
+  List categoryList = List();
+
   Future getRequestData() async {
     // var url = 'http://';
-    var response = await http
-        .post("http://192.168.254.106/phpPractice/mobile/requestApi.php");
-    return json.decode(response.body);
+    var response = await http.get(Home.LOAD_CATEGORY_URL);
+    if (response.statusCode == 200) {
+      setState(() {
+        categoryList = json.decode(response.body);
+      });
+      // print(categoryList);
+      return categoryList;
+    }
+    // return json.decode(response.body);
+  }
+/////
+
+//////
+  Widget showImage(String thumbnail) {
+    String placeholder =
+        "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
+    if (thumbnail?.isEmpty ?? true)
+      thumbnail = placeholder;
+    else {
+      switch (thumbnail.length % 4) {
+        case 1:
+          break; // this case can't be handled well, because 3 padding chars is illeagal.
+        case 2:
+          thumbnail = thumbnail + "==";
+          break;
+        case 3:
+          thumbnail = thumbnail + "=";
+          break;
+      }
+    }
+    // final UriData data = Uri.parse(thumbnail).data;
+    // print(data.isBase64); // Should print true
+    // print(data.contentAsBytes()); // Would returns your image a Uint8List
+    final _byteImage = Base64Decoder().convert(thumbnail);
+    Widget image = Image.memory(
+      _byteImage,
+      width: 50,
+      height: 20,
+      gaplessPlayback: true,
+      fit: BoxFit.fill,
+    );
+    return image;
+  }
+
+  Widget showImageB(String image) {
+    // final UriData data = Uri.parse(image).data;
+    // print(data.isBase64); // Should print true
+    // print(data.contentAsBytes());
+    String placeholder =
+        "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
+    if (image?.isEmpty ?? true)
+      image = placeholder;
+    else {
+      switch (image.length % 4) {
+        case 1:
+          break; // this case can't be handled well, because 3 padding chars is illeagal.
+        case 2:
+          image = image + "==";
+          break;
+        case 3:
+          image = image + "=";
+          break;
+      }
+    }
+
+    Uint8List _bytesImage;
+
+    String _imgString = image;
+
+    _bytesImage = Base64Decoder().convert(_imgString);
+    return Image.memory(_bytesImage,
+        width: double.infinity,
+        height: 200,
+        gaplessPlayback: true,
+        fit: BoxFit.fill);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getRequestData();
   }
 
   @override
@@ -36,65 +122,66 @@ class _HomeState extends State<Home> {
               return snapshot.hasData
                   ? ListView.builder(
                       itemCount: snapshot.data.length,
+                      // itemCount: categoryList.length,
                       itemBuilder: (context, index) {
                         List list = snapshot.data;
                         return Container(
-                          margin: EdgeInsets.all(5.0),
+                          margin: EdgeInsets.all(20.0),
                           child: Card(
                             child: Padding(
                               padding: EdgeInsets.all(10.0),
-                              child: ListTile(
-                                // isThreeLine: true,
-                                title: Text(list[index]["orgID"] ?? "Admin"),
+                              child: Column(children: [
+                                // showImage(list[index]['images']),
+                                showImageB(list[index]['images']),
 
-                                subtitle: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(height: 20.0),
-                                      Text("Name : ${list[index]['name']}"),
-                                      SizedBox(height: 20.0),
-                                      Text(
-                                          "Quantity : ${list[index]['quantity']}"),
-                                      SizedBox(height: 20.0),
-                                      Text(
-                                          "Description: ${list[index]['description']}"),
-                                      SizedBox(height: 25.0),
-                                      Row(
-                                        children: [
-                                          RaisedButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    CupertinoPageRoute(
-                                                        builder: (context) =>
-                                                            DonationHome()));
-                                                print(
-                                                    list[index]['description']);
-                                              },
-                                              color: Colors.blue,
-                                              child: Text("Donate",
-                                                  style: TextStyle(
-                                                      color: Colors.white))),
-                                          SizedBox(width: 20.0),
-                                          RaisedButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    CupertinoPageRoute(
-                                                        builder: (context) =>
-                                                            DonationHome()));
-                                                print(
-                                                    list[index]['description']);
-                                              },
-                                              color: Colors.red,
-                                              child: Text("Save",
-                                                  style: TextStyle(
-                                                      color: Colors.white))),
-                                        ],
-                                      )
-                                    ]),
-                              ),
+                                ListTile(
+                                  // isThreeLine: true,
+                                  // showImage(list[index]['images']),
+                                  subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(height: 10.0),
+                                        Text("Name : ${list[index]['name']}"),
+                                        SizedBox(height: 10.0),
+                                        Text(
+                                            "Quantity : ${list[index]['quantity']}"),
+                                        SizedBox(height: 10.0),
+                                        Text(
+                                            "Description: ${list[index]['description']}"),
+                                        SizedBox(height: 10.0),
+                                        Row(
+                                          children: [
+                                            RaisedButton(
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      CupertinoPageRoute(
+                                                          builder: (context) =>
+                                                              DonationHome(
+                                                                  orgID: list[
+                                                                          index]
+                                                                      [
+                                                                      'requestID'])));
+                                                  print(list[index]
+                                                      ['description']);
+                                                },
+                                                color: Colors.blue,
+                                                child: Text("Donate",
+                                                    style: TextStyle(
+                                                        color: Colors.white))),
+                                            SizedBox(width: 20.0),
+                                            RaisedButton(
+                                                onPressed: () {},
+                                                color: Colors.white,
+                                                child: Icon(
+                                                    FontAwesomeIcons.solidHeart,
+                                                    color: Colors.red)),
+                                          ],
+                                        )
+                                      ]),
+                                ),
+                              ]),
                             ),
                           ),
                         );
@@ -103,7 +190,15 @@ class _HomeState extends State<Home> {
             }));
   }
 }
-
+//  ListView.builder(
+//             itemCount: categoryList.length,
+//             itemBuilder: (context, index) {
+//               return ListTile(
+//                 title: Text(categoryList[index]['orgID']),
+//                 subtitle: Text(categoryList[index]['name']),
+//                 trailing: showImage(categoryList[index]['images']),
+//               );
+//             })
 // class DataSearch extends SearchDelegate<String> {
 //   final recent = ["hellow", "ahie"];
 //   @override

@@ -1,5 +1,6 @@
 import 'package:fido_project/screens/donorProfile.dart';
 import 'package:fido_project/screens/orgRequests.dart';
+import 'package:fido_project/screens/orgRequestStatus.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -16,7 +17,7 @@ class _WelcomeOrgState extends State<WelcomeOrg> {
   int _currentIndex = 0;
   final tabs = [
     OrgRequests(),
-    Center(child: Text("Notifications")),
+    Request(),
     Center(child: Text("Profile")),
   ];
 

@@ -4,45 +4,44 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Donations extends StatefulWidget {
+class Request extends StatefulWidget {
   @override
-  _DonationsState createState() => _DonationsState();
+  _RequestState createState() => _RequestState();
 }
 
-class _DonationsState extends State<Donations> {
-  String username = "";
-  Future getDonationData() async {
-    // var url = 'http://';
+class _RequestState extends State<Request> {
+  String orgname = "";
+  Future getRequestData() async {
     var response = await http.post(
-        "http://192.168.254.106/phpPractice/mobile/donationStatusApi.php",
-        body: {'username': username});
-
+        "http://192.168.254.106/phpPractice/mobile/requestStatusApi.php",
+        body: {'orgname': orgname});
     return json.decode(response.body);
   }
 
-  Future getUsername() async {
+  Future getOrgname() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
-      username = preferences.getString('username');
+      orgname = preferences.getString('orgname');
     });
   }
 
   @override
   void initState() {
     super.initState();
-    getUsername();
+
+    getOrgname();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Donation Status"),
+          title: Text("Request Status"),
           backgroundColor: kprimaryColor,
           automaticallyImplyLeading: false,
         ),
         body: FutureBuilder(
-            future: getDonationData(),
+            future: getRequestData(),
             builder: (context, snapshot) {
               if (snapshot.hasError) print(snapshot.error);
               return snapshot.hasData
@@ -57,7 +56,7 @@ class _DonationsState extends State<Donations> {
                               padding: EdgeInsets.all(10.0),
                               child: ListTile(
                                 // isThreeLine: true,
-                                title: Text(list[index]["donorID"]),
+                                title: Text(list[index]["requestID"]),
 
                                 subtitle: Column(
                                     crossAxisAlignment:
@@ -65,27 +64,25 @@ class _DonationsState extends State<Donations> {
                                     children: [
                                       SizedBox(height: 20.0),
                                       Text(
-                                          "Donation name : ${list[index]['donationName']}"),
-                                      SizedBox(height: 20.0),
+                                          "Donation name : ${list[index]['orgID']}"),
+                                      SizedBox(height: 10.0),
+                                      Text("Name: ${list[index]['name']}"),
+                                      SizedBox(height: 10.0),
                                       Text(
-                                          "Quantity : ${list[index]['donation_quantity']}"),
-                                      SizedBox(height: 20.0),
-                                      Text("Date: ${list[index]['date']}"),
-                                      SizedBox(height: 20.0),
+                                          "Quantity : ${list[index]['quantity']}"),
+                                      SizedBox(height: 10.0),
                                       Text(
-                                          "Description : ${list[index]['donation_description']}"),
-                                      SizedBox(height: 20.0),
+                                          "Description : ${list[index]['description']}"),
+                                      SizedBox(height: 10.0),
+                                      Text("Urgent : ${list[index]['Urgent']}"),
+                                      SizedBox(height: 10.0),
                                       Text(
-                                          "Date Received : ${list[index]['date_received']}"),
-                                      SizedBox(height: 20.0),
+                                          "Request Date : ${list[index]['requestDate']}"),
+                                      SizedBox(height: 10.0),
+                                      Text("Images : ${list[index]['images']}"),
+                                      SizedBox(height: 10.0),
                                       Text(
-                                          "Donation Status : "
-                                          "${list[index]['statusID'] == '1' ? 'Pending' : ''}"
-                                          "${list[index]['statusID'] == '2' ? 'Donation Accepted' : ''}"
-                                          "${list[index]['statusID'] == '3' ? 'Ready to Claim' : ''}"
-                                          "${list[index]['statusID'] == '4' ? 'Claim by Organization' : ''}",
-                                          style:
-                                              TextStyle(color: Colors.green)),
+                                          "StatusID : ${list[index]['statusID']}")
                                     ]),
                               ),
                             ),

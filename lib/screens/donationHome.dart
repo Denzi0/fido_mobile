@@ -13,21 +13,25 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class DonationHome extends StatefulWidget {
+  String orgID;
+  DonationHome({Key key, @required this.orgID}) : super(key: key);
   @override
-  _DonationHomeState createState() => _DonationHomeState();
+  _DonationHomeState createState() => _DonationHomeState(orgID);
 }
 
 class _DonationHomeState extends State<DonationHome> {
-  var _currentSelectedValue;
+  String orgID;
+  _DonationHomeState(this.orgID);
   var _currencies = ["Food", "Item", "Clothes", "Both Food and Item", "Others"];
   String donorUsername = "";
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController donationtitle = TextEditingController();
+  // TextEditingController donationtitle = TextEditingController();
 
   TextEditingController donationname = TextEditingController();
   TextEditingController donationquantity = TextEditingController();
   TextEditingController description = TextEditingController();
+  var _currentSelectedValue;
 
   void food() async {
     var now = new DateTime.now();
@@ -36,32 +40,36 @@ class _DonationHomeState extends State<DonationHome> {
 
     ///
     if (_formKey.currentState.validate()) {
-      print(_currentSelectedValue);
-      print(_currencies.indexOf(_currentSelectedValue));
-      // var url = "http://192.168.254.106/phpPractice/mobile/Donationapi.php";
-      // var response = await http.post(url, body: {
-      //   'donorname': donorUsername,
-      //   'donationname': donationname.text,
-      //   'donationtype': (_currencies.indexOf(_currentSelectedValue)).toString(),
-      //   'donationquantity': donationquantity.text,
-      //   'description': description.text,
-      //   'date': formattedDate
-      // });
-      // var data = json.decode(response.body);
-      // if (data == "Success") {
-      //   Navigator.push(
-      //       context, MaterialPageRoute(builder: (context) => Home()));
-      //   Fluttertoast.showToast(
-      //       msg: "Donated",
-      //       toastLength: Toast.LENGTH_SHORT,
-      //       gravity: ToastGravity.CENTER,
-      //       timeInSecForIosWeb: 1,
-      //       backgroundColor: Colors.blue,
-      //       textColor: Colors.white,
-      //       fontSize: 16.0);
-      // }
-      // Navigator.push(
-      //     context, CupertinoPageRoute(builder: (context) => Match()));
+      var url = "http://192.168.254.106/phpPractice/mobile/donationHomeApi.php";
+      var response = await http.post(url, body: {
+        'orgID': orgID,
+        'donorname': donorUsername,
+        'donationname': donationname.text,
+        'donationtype': (_currencies.indexOf(_currentSelectedValue)).toString(),
+        'donationquantity': donationquantity.text,
+        'description': description.text,
+        'date': formattedDate,
+      });
+      var data = json.decode(response.body);
+      if (data == "Success") {
+        Fluttertoast.showToast(
+            msg: "Donated to Org",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.blue,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      } else {
+        Fluttertoast.showToast(
+            msg: "Error DOnation",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }
     }
   }
 
@@ -117,6 +125,7 @@ class _DonationHomeState extends State<DonationHome> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Text(orgID),
                     // _buildFoodDonFormField(
                     //     label: "Food Title", name: foodtitle),
                     _buildFoodDonFormField(
@@ -174,6 +183,8 @@ class _DonationHomeState extends State<DonationHome> {
                         height: 50.0,
                         child: RaisedButton(
                             onPressed: () {
+                              print(donorUsername);
+
                               food();
                             },
                             color: Colors.blue,

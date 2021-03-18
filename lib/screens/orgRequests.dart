@@ -77,7 +77,7 @@ class _OrgRequests extends State<OrgRequests> {
     if (_formKey.currentState.validate()) {
       // var url = "http://192.168.254.106/phpPractice/mobile/orgrequestapi.php";
       var response = await http.post(ADD_CATEGORY_URL, body: {
-        'images': imageData,
+        'images': imageData != null ? imageData : "",
         'orgname': orgname,
         'name': name.text,
         'quantity': quantity.text,

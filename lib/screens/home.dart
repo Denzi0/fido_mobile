@@ -72,7 +72,7 @@ class _HomeState extends State<Home> {
     String placeholder =
         "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
     if (image?.isEmpty ?? true)
-      image = placeholder;
+      return Container();
     else {
       switch (image.length % 4) {
         case 1:

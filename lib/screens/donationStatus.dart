@@ -50,6 +50,7 @@ class _DonationsState extends State<Donations> {
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
                         List list = snapshot.data;
+
                         return Container(
                           margin: EdgeInsets.all(5.0),
                           child: Card(
@@ -57,12 +58,14 @@ class _DonationsState extends State<Donations> {
                               padding: EdgeInsets.all(10.0),
                               child: ListTile(
                                 // isThreeLine: true,
-                                title: Text(list[index]["donorID"]),
+                                // title: Text(list[index]["donorID"]),
 
                                 subtitle: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      Text(
+                                          "Donation ID : ${list[index]['donationID']}"),
                                       SizedBox(height: 20.0),
                                       Text(
                                           "Donation name : ${list[index]['donationName']}"),
@@ -70,20 +73,19 @@ class _DonationsState extends State<Donations> {
                                       Text(
                                           "Quantity : ${list[index]['donation_quantity']}"),
                                       SizedBox(height: 20.0),
-                                      Text("Date: ${list[index]['date']}"),
-                                      SizedBox(height: 20.0),
                                       Text(
                                           "Description : ${list[index]['donation_description']}"),
                                       SizedBox(height: 20.0),
+                                      Text("Date: ${list[index]['date']}"),
+                                      SizedBox(height: 20.0),
                                       Text(
-                                          "Date Received : ${list[index]['date_received']}"),
+                                          "Date Received : ${list[index]['date_received'] != null ? list[index]['date_received'] : 'Not recieve Yet'}"),
                                       SizedBox(height: 20.0),
                                       Text(
                                           "Donation Status : "
                                           "${list[index]['statusID'] == '1' ? 'Pending' : ''}"
-                                          "${list[index]['statusID'] == '2' ? 'Donation Accepted' : ''}"
-                                          "${list[index]['statusID'] == '3' ? 'Ready to Claim' : ''}"
-                                          "${list[index]['statusID'] == '4' ? 'Claim by Organization' : ''}",
+                                          "${list[index]['statusID'] == '5' ? 'Approved' : ''}"
+                                          "${list[index]['statusID'] == '6' ? 'Disapproved' : ''}",
                                           style:
                                               TextStyle(color: Colors.green)),
                                     ]),

@@ -20,7 +20,6 @@ class _HomeState extends State<Home> {
   List categoryList = List();
 
   Future getRequestData() async {
-    // var url = 'http://';
     var response = await http.get(Home.LOAD_CATEGORY_URL);
     if (response.statusCode == 200) {
       setState(() {
@@ -142,6 +141,11 @@ class _HomeState extends State<Home> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         SizedBox(height: 10.0),
+                                        Text(
+                                            "Organization Name : ${list[index]['orgName']}",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                        SizedBox(height: 10.0),
                                         Text("Name : ${list[index]['name']}"),
                                         SizedBox(height: 10.0),
                                         Text(
@@ -159,7 +163,11 @@ class _HomeState extends State<Home> {
                                                       CupertinoPageRoute(
                                                           builder: (context) =>
                                                               DonationHome(
-                                                                  orgID: list[
+                                                                  orgDescription:
+                                                                      list[index]
+                                                                          [
+                                                                          'description'],
+                                                                  requestID: list[
                                                                           index]
                                                                       [
                                                                       'requestID'])));

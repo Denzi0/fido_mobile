@@ -189,7 +189,7 @@ class _OrgRequests extends State<OrgRequests> {
                         ? Text('No image Selected')
                         : Container(
                             height: 200.0,
-                            width: 200.0,
+                            width: double.infinity,
                             child: showImage(imageData),
                           ),
                     SizedBox(height: 10.0),

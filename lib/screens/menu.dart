@@ -55,8 +55,8 @@ class _WelcomeState extends State<Welcome> {
             title: Text("Home"),
           ),
           BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.mapMarkedAlt),
-            title: Text("Drop-Off"),
+            icon: Icon(FontAwesomeIcons.archive),
+            title: Text("Donations"),
           ),
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.boxOpen),
@@ -64,7 +64,7 @@ class _WelcomeState extends State<Welcome> {
           ),
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.scroll),
-            title: Text("Donations"),
+            title: Text(""),
           ),
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.solidUserCircle),

@@ -13,15 +13,21 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class DonationHome extends StatefulWidget {
-  String orgID;
-  DonationHome({Key key, @required this.orgID}) : super(key: key);
+  String requestID;
+  String orgDescription;
+  DonationHome(
+      {Key key, @required this.requestID, @required this.orgDescription})
+      : super(key: key);
   @override
-  _DonationHomeState createState() => _DonationHomeState(orgID);
+  _DonationHomeState createState() =>
+      _DonationHomeState(this.requestID, this.orgDescription);
 }
 
 class _DonationHomeState extends State<DonationHome> {
-  String orgID;
-  _DonationHomeState(this.orgID);
+  String requestID;
+  String orgDescription;
+  _DonationHomeState(this.requestID, this.orgDescription);
+
   var _currencies = ["Food", "Item", "Clothes", "Both Food and Item", "Others"];
   String donorUsername = "";
 
@@ -42,7 +48,7 @@ class _DonationHomeState extends State<DonationHome> {
     if (_formKey.currentState.validate()) {
       var url = "http://192.168.254.106/phpPractice/mobile/donationHomeApi.php";
       var response = await http.post(url, body: {
-        'orgID': orgID,
+        'orgID': requestID,
         'donorname': donorUsername,
         'donationname': donationname.text,
         'donationtype': (_currencies.indexOf(_currentSelectedValue)).toString(),
@@ -85,30 +91,7 @@ class _DonationHomeState extends State<DonationHome> {
     super.initState();
     getdonorFood();
     print(donorUsername);
-  }
-
-  Widget _buildFoodDonFormField(
-      {String label,
-      int lines,
-      TextInputType keyType,
-      @required TextEditingController name,
-      String hintName}) {
-    return TextFormField(
-      controller: name,
-      maxLines: lines,
-      validator: (value) {
-        if (value.isEmpty) {
-          return "Please Input Food";
-        } else {
-          return null;
-        }
-      },
-      keyboardType: keyType,
-      decoration: InputDecoration(
-          hintText: hintName,
-          labelText: label,
-          contentPadding: EdgeInsets.fromLTRB(0, 20, 0, 15)),
-    );
+    print(orgDescription);
   }
 
   @override
@@ -125,7 +108,13 @@ class _DonationHomeState extends State<DonationHome> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(orgID),
+                    // Text(orgID),
+
+                    Column(children: [
+                      Text(orgDescription),
+                      SizedBox(height: 10.0),
+                      Text(requestID)
+                    ]),
                     // _buildFoodDonFormField(
                     //     label: "Food Title", name: foodtitle),
                     _buildFoodDonFormField(
@@ -199,4 +188,28 @@ class _DonationHomeState extends State<DonationHome> {
       ),
     );
   }
+}
+
+Widget _buildFoodDonFormField(
+    {String label,
+    int lines,
+    TextInputType keyType,
+    @required TextEditingController name,
+    String hintName}) {
+  return TextFormField(
+    controller: name,
+    maxLines: lines,
+    validator: (value) {
+      if (value.isEmpty) {
+        return "Please Input Food";
+      } else {
+        return null;
+      }
+    },
+    keyboardType: keyType,
+    decoration: InputDecoration(
+        hintText: hintName,
+        labelText: label,
+        contentPadding: EdgeInsets.fromLTRB(0, 20, 0, 15)),
+  );
 }

@@ -36,7 +36,7 @@ class _RequestState extends State<Request> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Request Status"),
+          title: Text("My request"),
           backgroundColor: kprimaryColor,
           automaticallyImplyLeading: false,
         ),
@@ -79,10 +79,13 @@ class _RequestState extends State<Request> {
                                       Text(
                                           "Request Date : ${list[index]['requestDate']}"),
                                       SizedBox(height: 10.0),
-                                      Text("Images : ${list[index]['images']}"),
-                                      SizedBox(height: 10.0),
                                       Text(
-                                          "StatusID : ${list[index]['statusID']}")
+                                          "Status: "
+                                          "${list[index]['statusID'] == '1' ? 'Pending' : ''}"
+                                          "${list[index]['statusID'] == '5' ? 'Approved' : ''}"
+                                          "${list[index]['statusID'] == '6' ? 'Disapproved' : ''}",
+                                          style:
+                                              TextStyle(color: Colors.green)),
                                     ]),
                               ),
                             ),

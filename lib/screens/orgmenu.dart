@@ -18,6 +18,7 @@ class _WelcomeOrgState extends State<WelcomeOrg> {
   final tabs = [
     OrgRequests(),
     Request(),
+    Center(child: Text("Donations")),
     Center(child: Text("Profile")),
   ];
 
@@ -36,7 +37,11 @@ class _WelcomeOrgState extends State<WelcomeOrg> {
           ),
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.scroll),
-            title: Text("Notifications"),
+            title: Text("My Request"),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.solidUserCircle),
+            title: Text("Donations"),
           ),
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.solidUserCircle),

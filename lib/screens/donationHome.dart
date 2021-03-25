@@ -15,18 +15,23 @@ import 'dart:convert';
 class DonationHome extends StatefulWidget {
   String requestID;
   String orgDescription;
+  String orgName;
   DonationHome(
-      {Key key, @required this.requestID, @required this.orgDescription})
+      {Key key,
+      @required this.requestID,
+      @required this.orgDescription,
+      @required this.orgName})
       : super(key: key);
   @override
   _DonationHomeState createState() =>
-      _DonationHomeState(this.requestID, this.orgDescription);
+      _DonationHomeState(this.requestID, this.orgDescription, this.orgName);
 }
 
 class _DonationHomeState extends State<DonationHome> {
   String requestID;
   String orgDescription;
-  _DonationHomeState(this.requestID, this.orgDescription);
+  String orgName;
+  _DonationHomeState(this.requestID, this.orgDescription, this.orgName);
 
   var _currencies = ["Food", "Item", "Clothes", "Both Food and Item", "Others"];
   String donorUsername = "";
@@ -111,9 +116,11 @@ class _DonationHomeState extends State<DonationHome> {
                     // Text(orgID),
 
                     Column(children: [
-                      Text(orgDescription),
+                      Text(orgName),
                       SizedBox(height: 10.0),
-                      Text(requestID)
+                      Text(orgDescription),
+                      // SizedBox(height: 10.0),
+                      // Text(requestID)
                     ]),
                     // _buildFoodDonFormField(
                     //     label: "Food Title", name: foodtitle),
@@ -176,7 +183,7 @@ class _DonationHomeState extends State<DonationHome> {
 
                               food();
                             },
-                            color: Colors.blue,
+                            color: Color(0xff00af91),
                             child: Text("Donate",
                                 style: TextStyle(color: Colors.white))),
                       ),

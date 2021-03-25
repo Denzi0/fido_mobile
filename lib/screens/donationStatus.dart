@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Donations extends StatefulWidget {
   @override
@@ -12,11 +13,9 @@ class Donations extends StatefulWidget {
 class _DonationsState extends State<Donations> {
   String username = "";
   Future getDonationData() async {
-    // var url = 'http://';
     var response = await http.post(
         "http://192.168.254.106/phpPractice/mobile/donationStatusApi.php",
         body: {'username': username});
-
     return json.decode(response.body);
   }
 
@@ -27,6 +26,7 @@ class _DonationsState extends State<Donations> {
     });
   }
 
+  Future deleteDonation() async {}
   @override
   void initState() {
     super.initState();
@@ -89,6 +89,13 @@ class _DonationsState extends State<Donations> {
                                           style:
                                               TextStyle(color: Colors.green)),
                                     ]),
+                                trailing: IconButton(
+                                  icon: Icon(FontAwesomeIcons.timesCircle),
+                                  tooltip: 'Delete donation',
+                                  onPressed: () {
+                                    print("pressdelete");
+                                  },
+                                ),
                               ),
                             ),
                           ),

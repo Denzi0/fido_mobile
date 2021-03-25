@@ -146,7 +146,8 @@ class _HomeState extends State<Home> {
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
                                         SizedBox(height: 10.0),
-                                        Text("Name : ${list[index]['name']}"),
+                                        Text(
+                                            "Request name :${list[index]['name']}"),
                                         SizedBox(height: 10.0),
                                         Text(
                                             "Quantity : ${list[index]['quantity']}"),
@@ -161,20 +162,20 @@ class _HomeState extends State<Home> {
                                                   Navigator.push(
                                                       context,
                                                       CupertinoPageRoute(
-                                                          builder: (context) =>
-                                                              DonationHome(
-                                                                  orgDescription:
-                                                                      list[index]
-                                                                          [
-                                                                          'description'],
-                                                                  requestID: list[
-                                                                          index]
-                                                                      [
-                                                                      'requestID'])));
+                                                          builder: (context) => DonationHome(
+                                                              orgName: list[
+                                                                      index]
+                                                                  ['orgName'],
+                                                              orgDescription: list[
+                                                                      index][
+                                                                  'description'],
+                                                              requestID: list[
+                                                                      index][
+                                                                  'requestID'])));
                                                   print(list[index]
                                                       ['description']);
                                                 },
-                                                color: Colors.blue,
+                                                color: Color(0xff00af91),
                                                 child: Text("Donate",
                                                     style: TextStyle(
                                                         color: Colors.white))),

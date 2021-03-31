@@ -1,7 +1,4 @@
 import 'package:fido_project/screens/donorLogin.dart';
-// import 'package:fido_project/screens/donorReg.dart';
-// import 'package:fido_project/screens/menu.dart';
-// import 'package:fido_project/screens/foodDonation.dart';
 import 'package:fido_project/screens/donorProfile.dart';
 import 'package:fido_project/screens/menu.dart';
 import 'package:flutter/material.dart';

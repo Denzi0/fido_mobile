@@ -16,8 +16,7 @@ class _DonationBoxState extends State<DonationBox> {
   Future getDonationBox() async {
     print(donorUsername);
     var url = "http://192.168.254.106/phpPractice/mobile/donationBoxApi.php";
-    var response = await http.post(url,
-        body: {'orgUsername': orgUsername, 'donorUsername': donorUsername});
+    var response = await http.post(url, body: {'donorUsername': donorUsername});
     return json.decode(response.body);
   }
 
@@ -54,7 +53,6 @@ class _DonationBoxState extends State<DonationBox> {
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
                         List list = snapshot.data;
-
                         return Container(
                           margin: EdgeInsets.all(5.0),
                           child: Card(
@@ -62,8 +60,16 @@ class _DonationBoxState extends State<DonationBox> {
                               padding: EdgeInsets.all(10.0),
                               child: ListTile(
                                 // isThreeLine: true,
-                                title: Text(
-                                    "Donation ID :${list[index]['donationID']}"),
+                                title: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          "Donation ID :${list[index]['donationID']}"),
+                                      SizedBox(height: 10),
+                                      Text(
+                                          "Donation Box ID : ${list[index]['donation_boxID']}"),
+                                    ]),
 
                                 subtitle: Column(
                                     crossAxisAlignment:
@@ -72,6 +78,18 @@ class _DonationBoxState extends State<DonationBox> {
                                       SizedBox(height: 10),
                                       Text(
                                           "Organization Name : ${list[index]['orgName']}"),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        "Donation Request Name : ${list[index]['name']}",
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        "My donation : ${list[index]['donationName']}",
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        "Feedback : ${list[index]['orgFeedback']}",
+                                      ),
                                       SizedBox(height: 10),
                                       Text(
                                         "Donation Status : ${list[index]['statusDescription']}",

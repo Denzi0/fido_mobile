@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class Donations extends StatefulWidget {
   @override
@@ -86,8 +87,9 @@ class _DonationsState extends State<Donations> {
                                           "${list[index]['statusID'] == '1' ? 'Pending' : ''}"
                                           "${list[index]['statusID'] == '5' ? 'Approved' : ''}"
                                           "${list[index]['statusID'] == '6' ? 'Disapproved' : ''}",
-                                          style:
-                                              TextStyle(color: Colors.green)),
+                                          style: TextStyle(
+                                            color: ksecondaryColor,
+                                          )),
                                     ]),
                                 trailing: IconButton(
                                   icon: Icon(FontAwesomeIcons.timesCircle),

@@ -114,89 +114,103 @@ class _HomeState extends State<Home> {
           //   IconButton(icon: Icon(Icons.search), onPressed: () {})
           // ],
         ),
-        body: FutureBuilder(
-            future: getRequestData(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) print(snapshot.error);
-              return snapshot.hasData
-                  ? ListView.builder(
-                      itemCount: snapshot.data.length,
-                      // itemCount: categoryList.length,
-                      itemBuilder: (context, index) {
-                        List list = snapshot.data;
-                        return Container(
-                          margin: EdgeInsets.all(20.0),
-                          child: Card(
-                            child: Padding(
-                              padding: EdgeInsets.all(10.0),
-                              child: Column(children: [
-                                // showImage(list[index]['images']),
-                                showImageB(list[index]['images']),
+        body: Column(
+          children: [
+            RaisedButton(
+                onPressed: () {}, color: Colors.white, child: Text("Urgent")),
+            Expanded(
+              child: FutureBuilder(
+                  future: getRequestData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) print(snapshot.error);
+                    return snapshot.hasData
+                        ? ListView.builder(
+                            itemCount: snapshot.data.length,
+                            // itemCount: categoryList.length,
+                            itemBuilder: (context, index) {
+                              List list = snapshot.data;
+                              return Container(
+                                margin: EdgeInsets.all(20.0),
+                                child: Card(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Column(children: [
+                                      // showImage(list[index]['images']),
+                                      showImageB(list[index]['images']),
 
-                                ListTile(
-                                  // isThreeLine: true,
-                                  // showImage(list[index]['images']),
-                                  subtitle: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(height: 10.0),
-                                        Text(
-                                            "Organization Name : ${list[index]['orgName']}",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold)),
-                                        SizedBox(height: 10.0),
-                                        Text(
-                                            "Request name :${list[index]['name']}"),
-                                        SizedBox(height: 10.0),
-                                        Text(
-                                            "Quantity : ${list[index]['quantity']}"),
-                                        SizedBox(height: 10.0),
-                                        Text(
-                                            "Description: ${list[index]['description']}"),
-                                        SizedBox(height: 10.0),
-                                        Row(
-                                          children: [
-                                            RaisedButton(
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      CupertinoPageRoute(
-                                                          builder: (context) => DonationHome(
-                                                              orgName: list[
-                                                                      index]
-                                                                  ['orgName'],
-                                                              orgDescription: list[
-                                                                      index][
-                                                                  'description'],
-                                                              requestID: list[
-                                                                      index][
-                                                                  'requestID'])));
-                                                  print(list[index]
-                                                      ['description']);
-                                                },
-                                                color: Color(0xff00af91),
-                                                child: Text("Donate",
-                                                    style: TextStyle(
-                                                        color: Colors.white))),
-                                            SizedBox(width: 20.0),
-                                            RaisedButton(
-                                                onPressed: () {},
-                                                color: Colors.white,
-                                                child: Icon(
-                                                    FontAwesomeIcons.solidHeart,
-                                                    color: Colors.red)),
-                                          ],
-                                        )
-                                      ]),
+                                      ListTile(
+                                        // isThreeLine: true,
+                                        // showImage(list[index]['images']),
+                                        subtitle: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(height: 10.0),
+                                              Text(
+                                                  "Organization Name : ${list[index]['orgName']}",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              SizedBox(height: 10.0),
+                                              Text(
+                                                  "Request name :${list[index]['name']}"),
+                                              SizedBox(height: 10.0),
+                                              Text(
+                                                  "Quantity : ${list[index]['quantity']}"),
+                                              SizedBox(height: 10.0),
+                                              Text(
+                                                  "Description: ${list[index]['description']}"),
+                                              SizedBox(height: 10.0),
+                                              Row(
+                                                children: [
+                                                  RaisedButton(
+                                                      onPressed: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            CupertinoPageRoute(
+                                                                builder: (context) => DonationHome(
+                                                                    orgName: list[
+                                                                            index]
+                                                                        [
+                                                                        'orgName'],
+                                                                    orgDescription:
+                                                                        list[index]
+                                                                            [
+                                                                            'description'],
+                                                                    requestID: list[
+                                                                            index]
+                                                                        [
+                                                                        'requestID'])));
+                                                        print(list[index]
+                                                            ['description']);
+                                                      },
+                                                      color: Color(0xff00af91),
+                                                      child: Text("Donate",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .white))),
+                                                  SizedBox(width: 20.0),
+                                                  RaisedButton(
+                                                      onPressed: () {},
+                                                      color: Colors.white,
+                                                      child: Icon(
+                                                          FontAwesomeIcons
+                                                              .solidHeart,
+                                                          color: Colors.red)),
+                                                ],
+                                              )
+                                            ]),
+                                      ),
+                                    ]),
+                                  ),
                                 ),
-                              ]),
-                            ),
-                          ),
-                        );
-                      })
-                  : CircularProgressIndicator();
-            }));
+                              );
+                            })
+                        : Container(child: Text("Loading..."));
+                  }),
+            )
+          ],
+        ));
   }
 }
 //  ListView.builder(

@@ -34,7 +34,7 @@ class _WelcomeState extends State<Welcome> {
         bottomNavigationBar: FFNavigationBar(
           theme: FFNavigationBarTheme(
             barBackgroundColor: Colors.white,
-            selectedItemBorderColor: Color(0xff00af91),
+            selectedItemBorderColor: ksecondaryColor,
             selectedItemBackgroundColor: kprimaryColor,
             selectedItemIconColor: Colors.white,
             selectedItemLabelColor: Colors.black,

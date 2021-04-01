@@ -206,7 +206,7 @@ class _HomeState extends State<Home> {
                                 ),
                               );
                             })
-                        : Container(child: Text("Loading..."));
+                        : Center(child: Text("Loading..."));
                   }),
             )
           ],

@@ -3,6 +3,7 @@ import "package:fido_project/constants/constantsVariable.dart";
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class OrgFeedback extends StatefulWidget {
   String donation_boxID;
@@ -13,6 +14,8 @@ class OrgFeedback extends StatefulWidget {
 }
 
 class _OrgFeedbackState extends State<OrgFeedback> {
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
   String donation_boxID;
   _OrgFeedbackState(this.donation_boxID);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -27,18 +30,57 @@ class _OrgFeedbackState extends State<OrgFeedback> {
             'orgfeedback': feedback.text,
             'orgdonation_boxID': donation_boxID
           });
-      var data = json.decode(response.body);
+      var data = await json.decode(response.body);
       if (data == "Success") {
+        // showNotification();
         Fluttertoast.showToast(
             msg: "Message Sent Successfully",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.green,
             textColor: Colors.white,
             fontSize: 16.0);
       }
     }
+  }
+
+  Future click() async {
+    var response =
+        await http.post('http://192.168.254.106/phpPractice/mobile/sample.php');
+    print("here================");
+    var convert = json.decode(response.body);
+
+    for (var i = 0; i <= convert.length; i++) {
+      print("printed ${convert[i]['statusDescription']}");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    var android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var ios = IOSInitializationSettings();
+    var initialize = InitializationSettings(android: android, iOS: ios);
+    flutterLocalNotificationsPlugin.initialize(initialize,
+        onSelectNotification: onSelectNotification);
+  }
+
+  Future onSelectNotification(String payload) async {
+    if (payload != null) {
+      debugPrint("Notification : " + payload);
+    }
+  }
+
+  Future showNotification(data) async {
+    var android = AndroidNotificationDetails(
+        'channelId', 'channelName', 'channelDescription');
+    var ios = IOSNotificationDetails();
+    var platform = NotificationDetails(android: android, iOS: ios);
+    flutterLocalNotificationsPlugin.show(0, data, 'body', platform,
+        payload: 'some details');
   }
 
   @override
@@ -69,6 +111,19 @@ class _OrgFeedbackState extends State<OrgFeedback> {
                           },
                           color: ksecondaryColor,
                           child: Text("Send Feedback",
+                              style: TextStyle(color: Colors.white))),
+                    ),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ButtonTheme(
+                      height: 50.0,
+                      child: RaisedButton(
+                          onPressed: () {
+                            click();
+                          },
+                          color: ksecondaryColor,
+                          child: Text("Click",
                               style: TextStyle(color: Colors.white))),
                     ),
                   ),

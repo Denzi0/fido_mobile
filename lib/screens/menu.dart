@@ -1,14 +1,72 @@
+import 'dart:convert';
 import 'package:fido_project/constants/constantsVariable.dart';
 import 'package:fido_project/screens/foodanditemDonation.dart';
 import 'package:fido_project/screens/donorProfile.dart';
 import 'package:fido_project/screens/donationStatus.dart';
 import 'package:fido_project/screens/donationBox.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:fido_project/screens/home.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:ff_navigation_bar/ff_navigation_bar.dart';
+import 'package:workmanager/workmanager.dart';
+
+const donorNoti = "donorNoti";
+
+void showNotification(id, v, y, flp) async {
+  var android = AndroidNotificationDetails(
+      'ChannelID', 'channel NAME', 'CHANNEL DESCRIPTION',
+      priority: Priority.high, importance: Importance.max);
+  var iOS = IOSNotificationDetails();
+  var platform = NotificationDetails(android: android, iOS: iOS);
+  await flp.show(id, '$y', '$v', platform, payload: 'VIS \n $v');
+}
+
+void start() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Workmanager.initialize(callbackDispatcher, isInDebugMode: true);
+  await Workmanager.registerPeriodicTask("5", donorNoti,
+      existingWorkPolicy: ExistingWorkPolicy.replace,
+      frequency: Duration(minutes: 15), //when should it check the link
+      initialDelay:
+          Duration(seconds: 5), //duration before showing the notification
+      constraints: Constraints(
+        networkType: NetworkType.connected,
+      ));
+}
+
+void callbackDispatcher() {
+  Workmanager.executeTask((task, inputData) async {
+    FlutterLocalNotificationsPlugin flp = FlutterLocalNotificationsPlugin();
+    var android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var iOS = IOSInitializationSettings();
+    var initSetttings = InitializationSettings(android: android, iOS: iOS);
+    flp.initialize(initSetttings);
+
+    var response =
+        await http.post('http://192.168.254.106/phpPractice/mobile/sample.php');
+    var convert = json.decode(response.body);
+    var convert2 =
+        convert.where((i) => i['donorName'] == 'Denzel Lanzaderas').toList();
+    print("Array $convert2");
+    if (true) {
+      // showNotification(0, "Donation Status", "Your donation from", flp);
+      //
+      for (var i = 0; i <= convert2.length - 1; i++) {
+        showNotification(
+            i,
+            "Donation Status ${convert2[i]['statusDescription']}Donation Box ID${convert2[i]['donation_boxID']}",
+            "Your donation to ${convert2[i]['orgName']}\n${convert2[i]['date_given']}",
+            flp);
+      }
+    }
+
+    return Future.value(true);
+  });
+}
 
 class Welcome extends StatefulWidget {
   @override
@@ -16,6 +74,13 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
+  @override
+  void initState() {
+    super.initState();
+
+    start();
+  }
+
   int selectedIndex = 0;
   PageController _pageController;
 

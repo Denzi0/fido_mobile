@@ -18,7 +18,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List categoryList = List();
-
+  List list;
+  List categoryListDisplay;
   Future getRequestData() async {
     var response = await http.get(Home.LOAD_CATEGORY_URL);
     if (response.statusCode == 200) {
@@ -100,7 +101,12 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    getRequestData();
+    getRequestData().then((value) {
+      setState(() {
+        // categoryList.addAll(value);
+        categoryListDisplay = categoryList;
+      });
+    });
   }
 
   @override
@@ -116,103 +122,102 @@ class _HomeState extends State<Home> {
         ),
         body: Column(
           children: [
-            RaisedButton(
-                onPressed: () {}, color: Colors.white, child: Text("Urgent")),
+            // RaisedButton(
+            //     onPressed: () {}, color: Colors.white, child: Text("Urgent")),
             Expanded(
-              child: FutureBuilder(
-                  future: getRequestData(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) print(snapshot.error);
-                    return snapshot.hasData
-                        ? ListView.builder(
-                            itemCount: snapshot.data.length,
-                            // itemCount: categoryList.length,
-                            itemBuilder: (context, index) {
-                              List list = snapshot.data;
-                              return Container(
-                                margin: EdgeInsets.all(20.0),
-                                child: Card(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(10.0),
-                                    child: Column(children: [
-                                      // showImage(list[index]['images']),
-                                      showImageB(list[index]['images']),
-
-                                      ListTile(
-                                        // isThreeLine: true,
-                                        // showImage(list[index]['images']),
-                                        subtitle: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(height: 10.0),
-                                              Text(
-                                                  "Organization Name : ${list[index]['orgName']}",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              SizedBox(height: 10.0),
-                                              Text(
-                                                  "Request name :${list[index]['name']}"),
-                                              SizedBox(height: 10.0),
-                                              Text(
-                                                  "Quantity : ${list[index]['quantity']}"),
-                                              SizedBox(height: 10.0),
-                                              Text(
-                                                  "Description: ${list[index]['description']}"),
-                                              SizedBox(height: 10.0),
-                                              Row(
-                                                children: [
-                                                  RaisedButton(
-                                                      onPressed: () {
-                                                        Navigator.push(
-                                                            context,
-                                                            CupertinoPageRoute(
-                                                                builder: (context) => DonationHome(
-                                                                    orgName: list[
-                                                                            index]
-                                                                        [
-                                                                        'orgName'],
-                                                                    orgDescription:
-                                                                        list[index]
-                                                                            [
-                                                                            'description'],
-                                                                    requestID: list[
-                                                                            index]
-                                                                        [
-                                                                        'requestID'])));
-                                                        print(list[index]
-                                                            ['description']);
-                                                      },
-                                                      color: Color(0xff00af91),
-                                                      child: Text("Donate",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .white))),
-                                                  SizedBox(width: 20.0),
-                                                  RaisedButton(
-                                                      onPressed: () {},
-                                                      color: Colors.white,
-                                                      child: Icon(
-                                                          FontAwesomeIcons
-                                                              .solidHeart,
-                                                          color: Colors.red)),
-                                                ],
-                                              )
-                                            ]),
-                                      ),
-                                    ]),
-                                  ),
-                                ),
-                              );
-                            })
-                        : Center(child: Text("Loading..."));
-                  }),
-            )
+                child: categoryListDisplay == null
+                    ? CircularProgressIndicator()
+                    : ListView.builder(
+                        itemBuilder: (context, index) {
+                          list = categoryListDisplay;
+                          return index == 0
+                              ? _searchBar()
+                              : _listItem(list, index - 1);
+                        },
+                        itemCount: categoryListDisplay.length + 1,
+                      ))
           ],
         ));
   }
+
+  _searchBar() {
+    return Padding(
+        padding: EdgeInsets.only(left: 24, right: 24),
+        child: TextField(
+          decoration: InputDecoration(hintText: "Search.."),
+          onChanged: (text) {
+            text = text.toLowerCase();
+            setState(() {
+              categoryListDisplay = categoryList.where((i) {
+                var orgName = i['orgName'].toLowerCase();
+                return orgName.contains(text);
+              }).toList();
+            });
+          },
+        ));
+  }
+
+  _listItem(list, index) {
+    return Container(
+      margin: EdgeInsets.all(20.0),
+      child: Card(
+        child: Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Column(children: [
+            // showImage(list[index]['images']),
+            showImageB(list[index]['images']),
+
+            ListTile(
+              // isThreeLine: true,
+              // showImage(list[index]['images']),
+              subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 10.0),
+                    Text("Organization Name : ${list[index]['orgName']}",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    SizedBox(height: 10.0),
+                    Text("Request name :${list[index]['name']}"),
+                    SizedBox(height: 10.0),
+                    Text("Quantity : ${list[index]['quantity']}"),
+                    SizedBox(height: 10.0),
+                    Text("Description: ${list[index]['description']}"),
+                    SizedBox(height: 10.0),
+                    Row(
+                      children: [
+                        RaisedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) => DonationHome(
+                                          orgName: list[index]['orgName'],
+                                          orgDescription: list[index]
+                                              ['description'],
+                                          requestID: list[index]
+                                              ['requestID'])));
+                              print(list[index]['description']);
+                            },
+                            color: Color(0xff00af91),
+                            child: Text("Donate",
+                                style: TextStyle(color: Colors.white))),
+                        SizedBox(width: 20.0),
+                        RaisedButton(
+                            onPressed: () {},
+                            color: Colors.white,
+                            child: Icon(FontAwesomeIcons.solidHeart,
+                                color: Colors.red)),
+                      ],
+                    )
+                  ]),
+            ),
+          ]),
+        ),
+      ),
+    );
+  }
 }
+
 //  ListView.builder(
 //             itemCount: categoryList.length,
 //             itemBuilder: (context, index) {

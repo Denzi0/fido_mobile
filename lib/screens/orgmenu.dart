@@ -3,11 +3,67 @@ import 'package:fido_project/screens/orgRequests.dart';
 import 'package:fido_project/screens/orgRequestStatus.dart';
 import 'package:fido_project/screens/orgDonationBox.dart';
 import 'package:fido_project/screens/orgProfile.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'package:fido_project/constants/constantsVariable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ff_navigation_bar/ff_navigation_bar.dart';
+import 'package:workmanager/workmanager.dart';
+
+const orgNoti = "orgNoti";
+void showNotification(id, v, y, flp) async {
+  var android = AndroidNotificationDetails(
+      'ChannelID', 'channel NAME', 'CHANNEL DESCRIPTION',
+      priority: Priority.high, importance: Importance.max);
+  var iOS = IOSNotificationDetails();
+  var platform = NotificationDetails(android: android, iOS: iOS);
+  await flp.show(id, '$y', '$v', platform, payload: 'VIS \n $v');
+}
+
+void start() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Workmanager.initialize(callbackDispatcher, isInDebugMode: true);
+  await Workmanager.registerPeriodicTask("5", orgNoti,
+      existingWorkPolicy: ExistingWorkPolicy.replace,
+      frequency: Duration(minutes: 15), //when should it check the link
+      initialDelay:
+          Duration(seconds: 5), //duration before showing the notification
+      constraints: Constraints(
+        networkType: NetworkType.connected,
+      ));
+}
+
+void callbackDispatcher() {
+  Workmanager.executeTask((task, inputData) async {
+    FlutterLocalNotificationsPlugin flp = FlutterLocalNotificationsPlugin();
+    var android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var iOS = IOSInitializationSettings();
+    var initSetttings = InitializationSettings(android: android, iOS: iOS);
+    flp.initialize(initSetttings);
+
+    var response =
+        await http.post('http://192.168.254.106/phpPractice/mobile/sample.php');
+    var org = json.decode(response.body);
+    var orgconvert = org.where((i) => i['orgName'] == 'Alay lakad').toList();
+    print("Array $orgconvert");
+    if (true) {
+      // showNotification(0, "Donation Status", "Your donation from", flp);
+      //
+      for (var i = 0; i <= orgconvert.length - 1; i++) {
+        showNotification(
+            i,
+            "Donation Status ${orgconvert[i]['statusDescription']}\nDonation Box ID${orgconvert[i]['donation_boxID']}",
+            "Your donation from ${orgconvert[i]['donorName']}\n${orgconvert[i]['date_given']}",
+            flp);
+      }
+    }
+
+    return Future.value(true);
+  });
+}
 
 class WelcomeOrg extends StatefulWidget {
   @override
@@ -15,6 +71,11 @@ class WelcomeOrg extends StatefulWidget {
 }
 
 class _WelcomeOrgState extends State<WelcomeOrg> {
+  @override
+  void initState() {
+    super.initState();
+    start();
+  }
   //data from orglogin
 
   // data from orglogin

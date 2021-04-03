@@ -45,16 +45,21 @@ class _OrgFeedbackState extends State<OrgFeedback> {
     }
   }
 
-  Future click() async {
-    var response =
-        await http.post('http://192.168.254.106/phpPractice/mobile/sample.php');
-    print("here================");
-    var convert = json.decode(response.body);
-
-    for (var i = 0; i <= convert.length; i++) {
-      print("printed ${convert[i]['statusDescription']}");
-    }
-  }
+  // Future click() async {
+  //   var response =
+  //       await http.post('http://192.168.254.106/phpPractice/mobile/sample.php');
+  //   print("here================");
+  //   var convert = json.decode(response.body);
+  //   var convert2 = convert.where((i) => i['orgName'] == 'Alay lakad').toList();
+  //   print(convert2);
+  //   if (true) {
+  //     for (var i = 0; i <= convert2.length - 1; i++) {
+  //       print("printed ${convert2[i]['statusDescription']}");
+  //     }
+  //   } else {
+  //     print("no mesage");
+  //   }
+  // }
 
   @override
   void initState() {
@@ -114,19 +119,19 @@ class _OrgFeedbackState extends State<OrgFeedback> {
                               style: TextStyle(color: Colors.white))),
                     ),
                   ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ButtonTheme(
-                      height: 50.0,
-                      child: RaisedButton(
-                          onPressed: () {
-                            click();
-                          },
-                          color: ksecondaryColor,
-                          child: Text("Click",
-                              style: TextStyle(color: Colors.white))),
-                    ),
-                  ),
+                  // SizedBox(
+                  //   width: double.infinity,
+                  //   child: ButtonTheme(
+                  //     height: 50.0,
+                  //     child: RaisedButton(
+                  //         onPressed: () {
+                  //           click();
+                  //         },
+                  //         color: ksecondaryColor,
+                  //         child: Text("Click",
+                  //             style: TextStyle(color: Colors.white))),
+                  //   ),
+                  // ),
                 ],
               )),
         ));

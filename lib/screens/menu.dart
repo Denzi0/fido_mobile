@@ -22,7 +22,13 @@ void showNotification(id, v, y, flp) async {
       priority: Priority.high, importance: Importance.max);
   var iOS = IOSNotificationDetails();
   var platform = NotificationDetails(android: android, iOS: iOS);
-  await flp.show(id, '$y', '$v', platform, payload: 'VIS \n $v');
+  await flp.show(
+    id,
+    '$y',
+    '$v',
+    platform,
+    payload: 'VIS \n $v',
+  );
 }
 
 void start() async {
@@ -58,8 +64,8 @@ void callbackDispatcher() {
       for (var i = 0; i <= convert2.length - 1; i++) {
         showNotification(
             i,
-            "Donation Status ${convert2[i]['statusDescription']}Donation Box ID${convert2[i]['donation_boxID']}",
-            "Your donation to ${convert2[i]['orgName']}\n${convert2[i]['date_given']}",
+            "Donation Status ${convert2[i]['statusDescription']}",
+            "Your donation to ${convert2[i]['orgName']} ${convert2[i]['date_given']}",
             flp);
       }
     }

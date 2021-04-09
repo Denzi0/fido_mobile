@@ -82,7 +82,7 @@ class _OrgRequests extends State<OrgRequests> {
         'name': name.text,
         'quantity': quantity.text,
         'description': description.text,
-        'isUrgent': isUrgent ? '1' : '0',
+        'isUrgent': isUrgent ? '0' : '1',
         'daterequest': currentdate
       });
 

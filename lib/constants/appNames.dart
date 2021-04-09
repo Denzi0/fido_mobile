@@ -1,5 +1,5 @@
 class Names {
-  String orgname;
+  String orgnames;
   String donorName;
-  Names({this.orgname, this.donorName});
+  Names({this.orgnames, this.donorName});
 }

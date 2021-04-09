@@ -29,39 +29,47 @@ class _FoodandItemState extends State<FoodandItem> {
   TextEditingController donationquantity = TextEditingController();
   TextEditingController description = TextEditingController();
 
-  void food() async {
+  void donation() async {
     var now = new DateTime.now();
     var formatter = new DateFormat('yyyy-MM-dd');
     String formattedDate = formatter.format(now);
 
     ///
     if (_formKey.currentState.validate()) {
-      print(_currentSelectedValue);
-      print(_currencies.indexOf(_currentSelectedValue));
-      var url = "http://192.168.254.106/phpPractice/mobile/Donationapi.php";
-      var response = await http.post(url, body: {
-        'donorname': donorUsername,
-        'donationname': donationname.text,
-        'donationtype': (_currencies.indexOf(_currentSelectedValue)).toString(),
-        'donationquantity': donationquantity.text,
-        'description': description.text,
-        'date': formattedDate
-      });
-      var data = json.decode(response.body);
-      if (data == "Success") {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Home()));
-        Fluttertoast.showToast(
-            msg: "Donated",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.blue,
-            textColor: Colors.white,
-            fontSize: 16.0);
-      }
+      // print(_currentSelectedValue);
+      // print(_currencies.indexOf(_currentSelectedValue));
+      // var url = "http://192.168.254.106/phpPractice/mobile/Donationapi.php";
+      // var response = await http.post(url, body: {
+      //   'donorname': donorUsername,
+      //   'donationname': donationname.text,
+      //   'donationtype': (_currencies.indexOf(_currentSelectedValue)).toString(),
+      //   'donationquantity': donationquantity.text,
+      //   'description': description.text,
+      //   'date': formattedDate
+      // });
+      // var data = json.decode(response.body);
+      // if (data == "Success") {
+      //   Navigator.push(
+      //       context, MaterialPageRoute(builder: (context) => Home()));
+      //   Fluttertoast.showToast(
+      //       msg: "Donated",
+      //       toastLength: Toast.LENGTH_SHORT,
+      //       gravity: ToastGravity.CENTER,
+      //       timeInSecForIosWeb: 1,
+      //       backgroundColor: Colors.blue,
+      //       textColor: Colors.white,
+      //       fontSize: 16.0);
+      // }
       Navigator.push(
-          context, CupertinoPageRoute(builder: (context) => Match()));
+          context,
+          CupertinoPageRoute(
+              builder: (context) => Match(
+                    donationNameMatch: donationname.text,
+                    donationTypeMatch:
+                        (_currencies.indexOf(_currentSelectedValue)).toString(),
+                    donationQuantityMatch: donationquantity.text,
+                    donationDescription: description.text,
+                  )));
     }
   }
 
@@ -97,9 +105,11 @@ class _FoodandItemState extends State<FoodandItem> {
       },
       keyboardType: keyType,
       decoration: InputDecoration(
+          border: new OutlineInputBorder(
+              borderSide: new BorderSide(color: Colors.teal)),
           hintText: hintName,
           labelText: label,
-          contentPadding: EdgeInsets.fromLTRB(0, 20, 0, 15)),
+          contentPadding: EdgeInsets.fromLTRB(10, 20, 0, 15)),
     );
   }
 
@@ -127,58 +137,58 @@ class _FoodandItemState extends State<FoodandItem> {
                       label: "Donation Name",
                       name: donationname,
                     ),
-                    SizedBox(height: 20),
-                    FormField<String>(
-                      builder: (FormFieldState<String> state) {
-                        return InputDecorator(
-                          decoration: InputDecoration(
-                            errorStyle: TextStyle(
-                                color: Colors.redAccent, fontSize: 16.0),
-                          ),
-                          isEmpty: _currentSelectedValue == '',
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              hint: Text("Donation Type"),
-                              value: _currentSelectedValue,
-                              isDense: true,
-                              onChanged: (String newValue) {
-                                setState(() {
-                                  _currentSelectedValue = newValue;
-                                  state.didChange(newValue);
-                                });
-                              },
-                              items: _currencies.map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    SizedBox(height: 20),
+                    // SizedBox(height: 20),
+                    // FormField<String>(
+                    //   builder: (FormFieldState<String> state) {
+                    //     return InputDecorator(
+                    //       decoration: InputDecoration(
+                    //         errorStyle: TextStyle(
+                    //             color: Colors.redAccent, fontSize: 16.0),
+                    //       ),
+                    //       isEmpty: _currentSelectedValue == '',
+                    //       child: DropdownButtonHideUnderline(
+                    //         child: DropdownButton<String>(
+                    //           hint: Text("Donation Type"),
+                    //           value: _currentSelectedValue,
+                    //           isDense: true,
+                    //           onChanged: (String newValue) {
+                    //             setState(() {
+                    //               _currentSelectedValue = newValue;
+                    //               state.didChange(newValue);
+                    //             });
+                    //           },
+                    //           items: _currencies.map((String value) {
+                    //             return DropdownMenuItem<String>(
+                    //               value: value,
+                    //               child: Text(value),
+                    //             );
+                    //           }).toList(),
+                    //         ),
+                    //       ),
+                    //     );
+                    //   },
+                    // ),
+                    // SizedBox(height: 20),
 
-                    _buildFoodDonFormField(
-                        label: "Donation Quanity",
-                        keyType: TextInputType.number,
-                        name: donationquantity),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    _buildFoodDonFormField(
-                        label: "Description", lines: 4, name: description),
-                    SizedBox(
-                      height: 20.0,
-                    ),
+                    // _buildFoodDonFormField(
+                    //     label: "Donation Quanity",
+                    //     keyType: TextInputType.number,
+                    //     name: donationquantity),
+                    // SizedBox(
+                    //   height: 20.0,
+                    // ),
+                    // _buildFoodDonFormField(
+                    //     label: "Description", lines: 4, name: description),
+                    // SizedBox(
+                    // height: 20.0,
+                    // ),
                     SizedBox(
                       width: double.infinity,
                       child: ButtonTheme(
                         height: 50.0,
                         child: RaisedButton(
                             onPressed: () {
-                              food();
+                              donation();
                             },
                             color: kprimaryColor,
                             child: Text("Find Match",

@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:fido_project/screens/donationHome.dart';
+import 'package:fido_project/screens/matchDonation.dart';
+
 import 'dart:async';
 import 'dart:typed_data';
 
@@ -17,21 +19,33 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List categoryList = List();
-  List list;
-  List categoryListDisplay;
+  List _categoryList = List();
+  List _list;
+  List _categoryListDisplay;
+  List _adminList;
+  List _adminRequest;
   Future getRequestData() async {
     var response = await http.get(Home.LOAD_CATEGORY_URL);
     if (response.statusCode == 200) {
       setState(() {
-        categoryList = json.decode(response.body);
+        _categoryList = json.decode(response.body);
       });
       // print(categoryList);
-      return categoryList;
+      return _categoryList;
     }
     // return json.decode(response.body);
   }
+
 /////
+  void getAdminRequestData() async {
+    var url =
+        "http://192.168.254.106/phpPractice/mobile/adminHomeRequestApi.php";
+    var response = await http.get(url);
+    // var data = json.decode(response.body);
+    setState(() {
+      _adminRequest = json.decode(response.body);
+    });
+  }
 
 //////
   Widget showImage(String thumbnail) {
@@ -66,9 +80,6 @@ class _HomeState extends State<Home> {
   }
 
   Widget showImageB(String image) {
-    // final UriData data = Uri.parse(image).data;
-    // print(data.isBase64); // Should print true
-    // print(data.contentAsBytes());
     String placeholder =
         "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
     if (image?.isEmpty ?? true)
@@ -85,11 +96,8 @@ class _HomeState extends State<Home> {
           break;
       }
     }
-
     Uint8List _bytesImage;
-
     String _imgString = image;
-
     _bytesImage = Base64Decoder().convert(_imgString);
     return Image.memory(_bytesImage,
         width: double.infinity,
@@ -101,10 +109,11 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    getAdminRequestData();
     getRequestData().then((value) {
       setState(() {
         // categoryList.addAll(value);
-        categoryListDisplay = categoryList;
+        _categoryListDisplay = _categoryList;
       });
     });
   }
@@ -122,19 +131,28 @@ class _HomeState extends State<Home> {
         ),
         body: Column(
           children: [
-            // RaisedButton(
-            //     onPressed: () {}, color: Colors.white, child: Text("Urgent")),
+            // _adminRequest != null
+            //     ? Expanded(
+            //         child: ListView.builder(
+            //             itemCount: _adminRequest.length - 1,
+            //             itemBuilder: (context, index) {
+            //               _adminList = _adminRequest;
+
+            //               return ListTile(title: Text(_adminList[index]['EmpID']));
+            //             }),
+            //       )
+            //     : Container(),
             Expanded(
-                child: categoryListDisplay == null
-                    ? CircularProgressIndicator()
+                child: _categoryListDisplay == null
+                    ? Center(child: Text("Loading..."))
                     : ListView.builder(
                         itemBuilder: (context, index) {
-                          list = categoryListDisplay;
+                          _list = _categoryListDisplay;
                           return index == 0
                               ? _searchBar()
-                              : _listItem(list, index - 1);
+                              : _listItem(_list, index - 1);
                         },
-                        itemCount: categoryListDisplay.length + 1,
+                        itemCount: _categoryListDisplay.length + 1,
                       ))
           ],
         ));
@@ -142,13 +160,16 @@ class _HomeState extends State<Home> {
 
   _searchBar() {
     return Padding(
-        padding: EdgeInsets.only(left: 24, right: 24),
+        padding: EdgeInsets.only(left: 24, right: 24, top: 10),
         child: TextField(
-          decoration: InputDecoration(hintText: "Search.."),
+          decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: "Search..",
+              prefixIcon: Icon(Icons.search)),
           onChanged: (text) {
             text = text.toLowerCase();
             setState(() {
-              categoryListDisplay = categoryList.where((i) {
+              _categoryListDisplay = _categoryList.where((i) {
                 var orgName = i['orgName'].toLowerCase();
                 return orgName.contains(text);
               }).toList();
@@ -166,7 +187,6 @@ class _HomeState extends State<Home> {
           child: Column(children: [
             // showImage(list[index]['images']),
             showImageB(list[index]['images']),
-
             ListTile(
               // isThreeLine: true,
               // showImage(list[index]['images']),
@@ -174,6 +194,7 @@ class _HomeState extends State<Home> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 10.0),
+                    // Text("${list[index]['EmpID'] == null ? '' : ''} "),
                     Text("Organization Name : ${list[index]['orgName']}",
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     SizedBox(height: 10.0),
@@ -183,14 +204,19 @@ class _HomeState extends State<Home> {
                     SizedBox(height: 10.0),
                     Text("Description: ${list[index]['description']}"),
                     SizedBox(height: 10.0),
+                    Text("Date: ${list[index]['requestDate']}"),
+                    SizedBox(height: 10.0),
                     Row(
                       children: [
-                        RaisedButton(
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: ksecondaryColor,
+                            ),
                             onPressed: () {
                               Navigator.push(
                                   context,
                                   CupertinoPageRoute(
-                                      builder: (context) => DonationHome(
+                                      builder: (context) => MatchDonation(
                                           orgName: list[index]['orgName'],
                                           orgDescription: list[index]
                                               ['description'],
@@ -198,13 +224,14 @@ class _HomeState extends State<Home> {
                                               ['requestID'])));
                               print(list[index]['description']);
                             },
-                            color: Color(0xff00af91),
                             child: Text("Donate",
                                 style: TextStyle(color: Colors.white))),
                         SizedBox(width: 20.0),
-                        RaisedButton(
+                        ElevatedButton(
                             onPressed: () {},
-                            color: Colors.white,
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.white, // background
+                            ),
                             child: Icon(FontAwesomeIcons.solidHeart,
                                 color: Colors.red)),
                       ],

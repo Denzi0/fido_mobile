@@ -24,12 +24,11 @@ class _OrgFeedbackState extends State<OrgFeedback> {
   Future orgFeedback() async {
     print("click feedback");
     if (_formKey.currentState.validate()) {
-      var response = await http.post(
-          "http://192.168.254.106/phpPractice/mobile/orgFeedbackApi.php",
-          body: {
-            'orgfeedback': feedback.text,
-            'orgdonation_boxID': donation_boxID
-          });
+      var response = await http
+          .post("http://$myip/phpPractice/mobile/orgFeedbackApi.php", body: {
+        'orgfeedback': feedback.text,
+        'orgdonation_boxID': donation_boxID
+      });
       var data = await json.decode(response.body);
       if (data == "Success") {
         // showNotification();

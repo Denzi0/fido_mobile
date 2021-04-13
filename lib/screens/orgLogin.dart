@@ -28,7 +28,7 @@ class _OrgLoginState extends State<OrgLogin> {
 
   Future orglogin() async {
     if (_formKey.currentState.validate()) {
-      var url = "http://192.168.254.106/phpPractice/mobile/orgloginapi.php";
+      var url = "http://$myip/phpPractice/mobile/orgloginapi.php";
       var response = await http.post(url,
           body: {'orgname': _orgname.text, 'orgpassword': _orgpassword.text});
       var data = json.decode(response.body);

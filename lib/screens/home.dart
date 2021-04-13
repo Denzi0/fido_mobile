@@ -1,3 +1,4 @@
+import 'package:fido_project/alertDialog.dart';
 import 'package:fido_project/constants/constantsVariable.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -12,7 +13,7 @@ import 'dart:typed_data';
 
 class Home extends StatefulWidget {
   static const LOAD_CATEGORY_URL =
-      'http://192.168.254.106/phpPractice/mobile/requestApi.php';
+      'http://$myip/phpPractice/mobile/requestApi.php';
 
   @override
   _HomeState createState() => _HomeState();
@@ -38,8 +39,7 @@ class _HomeState extends State<Home> {
 
 /////
   void getAdminRequestData() async {
-    var url =
-        "http://192.168.254.106/phpPractice/mobile/adminHomeRequestApi.php";
+    var url = "http://$myip/phpPractice/mobile/adminHomeRequestApi.php";
     var response = await http.get(url);
     // var data = json.decode(response.body);
     setState(() {
@@ -125,20 +125,18 @@ class _HomeState extends State<Home> {
           title: Text("Organization"),
           backgroundColor: kprimaryColor,
           automaticallyImplyLeading: false,
-          // actions: <Widget>[
-          //   IconButton(icon: Icon(Icons.search), onPressed: () {})
-          // ],
         ),
         body: Column(
           children: [
             // _adminRequest != null
             //     ? Expanded(
             //         child: ListView.builder(
-            //             itemCount: _adminRequest.length - 1,
+            //             itemCount: _adminRequest.length,
             //             itemBuilder: (context, index) {
             //               _adminList = _adminRequest;
 
-            //               return ListTile(title: Text(_adminList[index]['EmpID']));
+            //               return ListTile(
+            //                   title: Text(_adminList[index]['EmpID']));
             //             }),
             //       )
             //     : Container(),
@@ -195,7 +193,8 @@ class _HomeState extends State<Home> {
                   children: [
                     SizedBox(height: 10.0),
                     // Text("${list[index]['EmpID'] == null ? '' : ''} "),
-                    Text("Organization Name : ${list[index]['orgName']}",
+                    Text(
+                        "${list[index]['orgName'] == null ? 'DSWD' : list[index]['orgName']}",
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     SizedBox(height: 10.0),
                     Text("Request name :${list[index]['name']}"),
@@ -208,32 +207,34 @@ class _HomeState extends State<Home> {
                     SizedBox(height: 10.0),
                     Row(
                       children: [
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: ksecondaryColor,
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  CupertinoPageRoute(
-                                      builder: (context) => MatchDonation(
-                                          orgName: list[index]['orgName'],
-                                          orgDescription: list[index]
-                                              ['description'],
-                                          requestID: list[index]
-                                              ['requestID'])));
-                              print(list[index]['description']);
-                            },
-                            child: Text("Donate",
-                                style: TextStyle(color: Colors.white))),
+                        list[index]['orgName'] != null
+                            ? ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: ksecondaryColor,
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                          builder: (context) => MatchDonation(
+                                              orgName: list[index]['orgName'],
+                                              orgDescription: list[index]
+                                                  ['description'],
+                                              requestID: list[index]
+                                                  ['requestID'])));
+                                  print(list[index]['description']);
+                                },
+                                child: Text("Donate",
+                                    style: TextStyle(color: Colors.white)))
+                            : Container(),
                         SizedBox(width: 20.0),
-                        ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.white, // background
-                            ),
-                            child: Icon(FontAwesomeIcons.solidHeart,
-                                color: Colors.red)),
+                        // ElevatedButton(
+                        //     onPressed: () {},
+                        //     style: ElevatedButton.styleFrom(
+                        //       primary: Colors.white, // background
+                        //     ),
+                        //     child: Icon(FontAwesomeIcons.solidHeart,
+                        //         color: Colors.red)),
                       ],
                     )
                   ]),

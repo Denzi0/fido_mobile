@@ -19,7 +19,7 @@ class _DonorForgotPassState extends State<DonorForgotPass> {
   bool verifyButton = false;
   String verifyLink;
   Future checkUser() async {
-    var url = "http://192.168.254.106/phpPractice/mobile/donorPassCheck.php";
+    var url = "http://$myip/phpPractice/mobile/donorPassCheck.php";
     var response = await http.post(url, body: {
       'donoremail': email.text,
     });

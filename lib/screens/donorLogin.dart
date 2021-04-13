@@ -30,10 +30,11 @@ class _LoginState extends State<Login> {
 
   Future login() async {
     if (_formKey.currentState.validate()) {
-      var url = "http://192.168.254.106/phpPractice/mobile/loginapi.php";
-      var response = await http.post(url,
+      var url = "http://$myip/phpPractice/mobile/loginapi.php";
+      var response = await http.post(Uri.parse(url),
           body: {'username': _username.text, 'password': _password.text});
       var data = json.decode(response.body);
+      print(response.statusCode);
       if (data == "Success") {
         // SharedPreferences logout and keep login in
         SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -86,6 +87,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xfff8f1f1),
+
       // resizeToAvoidBottomPadding: false,
       body: Container(
         margin: EdgeInsets.all(24),
@@ -234,6 +236,8 @@ class _LoginState extends State<Login> {
     );
   }
 }
+
+class Right {}
 
 // class LoginInputField extends StatelessWidget {
 //   final TextEditingController name;

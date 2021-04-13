@@ -49,7 +49,7 @@ class _OrgRequests extends State<OrgRequests> {
   bool isUrgent = false;
 
   static const ADD_CATEGORY_URL =
-      "http://192.168.254.106/phpPractice/mobile/orgrequestapi.php";
+      "http://$myip/phpPractice/mobile/orgrequestapi.php";
 
   choiceImage() async {
     var pickedImage = await ImagePicker().getImage(
@@ -82,7 +82,7 @@ class _OrgRequests extends State<OrgRequests> {
         'name': name.text,
         'quantity': quantity.text,
         'description': description.text,
-        'isUrgent': isUrgent ? '0' : '1',
+        'isUrgent': isUrgent ? '1' : '0',
         'daterequest': currentdate
       });
 

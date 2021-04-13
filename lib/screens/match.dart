@@ -59,7 +59,7 @@ class _MatchState extends State<Match> {
     print(donationQuantityMatch);
     print(donationDescription);
     print(formattedDate);
-    var url = 'http://192.168.254.106/phpPractice/mobile/donationMatch.php';
+    var url = 'http://$myip/phpPractice/mobile/donationMatch.php';
     var response = await http.post(url, body: {
       // this is static cuzz
       // 'orgID': reqID.toString(),
@@ -93,7 +93,7 @@ class _MatchState extends State<Match> {
   }
 
   Future _donationRequest() async {
-    var url = "http://192.168.254.106/phpPractice/mobile/donationMatchApi.php";
+    var url = "http://$myip/phpPractice/mobile/donationMatchApi.php";
     var response =
         await http.post(url, body: {"donationMatch": donationNameMatch});
 

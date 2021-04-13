@@ -15,7 +15,7 @@ class _DonationsState extends State<Donations> {
   String username = "";
   Future getDonationData() async {
     var response = await http.post(
-        "http://192.168.254.106/phpPractice/mobile/donationStatusApi.php",
+        "http://$myip/phpPractice/mobile/donationStatusApi.php",
         body: {'username': username});
     return json.decode(response.body);
   }

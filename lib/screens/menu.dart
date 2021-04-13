@@ -53,7 +53,7 @@ void callbackDispatcher() {
     flp.initialize(initSetttings);
 
     var response =
-        await http.post('http://192.168.254.106/phpPractice/mobile/sample.php');
+        await http.post('http://$myip/phpPractice/mobile/sample.php');
     var convert = json.decode(response.body);
     var convert2 =
         convert.where((i) => i['donorName'] == 'Denzel Lanzaderas').toList();

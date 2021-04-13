@@ -13,7 +13,7 @@ class _RequestState extends State<Request> {
   String orgname = "";
   Future getRequestData() async {
     var response = await http.post(
-        "http://192.168.254.106/phpPractice/mobile/requestStatusApi.php",
+        "http://$myip/phpPractice/mobile/requestStatusApi.php",
         body: {'orgname': orgname});
     return json.decode(response.body);
   }

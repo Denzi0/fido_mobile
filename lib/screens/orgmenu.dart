@@ -45,7 +45,7 @@ void callbackDispatcher() {
     flp.initialize(initSetttings);
 
     var response =
-        await http.post('http://192.168.254.106/phpPractice/mobile/sample.php');
+        await http.post('http://$myip/phpPractice/mobile/sample.php');
     var org = json.decode(response.body);
     var orgconvert = org.where((i) => i['orgName'] == 'Alay lakad').toList();
     print("Array $orgconvert");

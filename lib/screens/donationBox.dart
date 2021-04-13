@@ -14,8 +14,8 @@ class _DonationBoxState extends State<DonationBox> {
   String donorUsername = "";
 
   Future getDonationBox() async {
-    print(donorUsername);
-    var url = "http://192.168.254.106/phpPractice/mobile/donationBoxApi.php";
+    print("helow");
+    var url = "http://$myip/phpPractice/mobile/donationBoxApi.php";
     var response = await http.post(url, body: {'donorUsername': donorUsername});
     return json.decode(response.body);
   }

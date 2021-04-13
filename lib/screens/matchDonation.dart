@@ -51,7 +51,7 @@ class _MatchDonationState extends State<MatchDonation> {
 
     ///
     if (_formKey.currentState.validate()) {
-      var url = "http://192.168.254.106/phpPractice/mobile/donationHomeApi.php";
+      var url = "http://$myip/phpPractice/mobile/donationHomeApi.php";
       var response = await http.post(url, body: {
         'orgID': requestID,
         'donorname': donorUsername,

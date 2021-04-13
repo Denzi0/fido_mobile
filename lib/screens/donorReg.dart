@@ -32,7 +32,7 @@ class _RegisterState extends State<Register> {
   final ageReg = RegExp(r'^[0-9]*$');
   Future register() async {
     if (_formKey.currentState.validate()) {
-      var url = "http://192.168.254.106/phpPractice/mobile/registerapi.php";
+      var url = "http://$myip/phpPractice/mobile/registerapi.php";
       //online api
       // var url = "https://fidoproject.000webhostapp.com/api.php";
       var response = await http.post(url, body: {

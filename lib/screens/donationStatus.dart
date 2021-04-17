@@ -27,7 +27,12 @@ class _DonationsState extends State<Donations> {
     });
   }
 
-  Future deleteDonation() async {}
+  Future deleteDonation(donationID) async {
+    var response = http.post(
+        "http://$myip/phpPractice/mobile/deleteDonationApi.php",
+        body: {"donationID": donationID});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -95,6 +100,7 @@ class _DonationsState extends State<Donations> {
                                   icon: Icon(FontAwesomeIcons.timesCircle),
                                   tooltip: 'Delete donation',
                                   onPressed: () {
+                                    deleteDonation(list[index]['donationID']);
                                     print("pressdelete");
                                   },
                                 ),

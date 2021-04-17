@@ -56,17 +56,17 @@ class _RequestState extends State<Request> {
                               padding: EdgeInsets.all(10.0),
                               child: ListTile(
                                 // isThreeLine: true,
-                                title: Text(
-                                    "Request ID : ${list[index]['requestID']}"),
+                                // title: Text(
+                                //     "Request ID : ${list[index]['requestID']}"),
 
                                 subtitle: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      SizedBox(height: 20.0),
-                                      Text(
-                                          "Donation ID : ${list[index]['orgID']}"),
-                                      SizedBox(height: 10.0),
+                                      // SizedBox(height: 20.0),
+                                      // Text(
+                                      //     "Request ID : ${list[index]['orgID']}"),
+                                      // SizedBox(height: 10.0),
                                       Text("Name: ${list[index]['name']}"),
                                       SizedBox(height: 10.0),
                                       Text(

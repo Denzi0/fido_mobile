@@ -55,8 +55,7 @@ void callbackDispatcher() {
     var response =
         await http.post('http://$myip/phpPractice/mobile/sample.php');
     var convert = json.decode(response.body);
-    var convert2 =
-        convert.where((i) => i['donorName'] == 'Denzel Lanzaderas').toList();
+    var convert2 = convert.where((i) => i['donorName'] == 'John Doe').toList();
     print("Array $convert2");
     if (true) {
       // showNotification(0, "Donation Status", "Your donation from", flp);

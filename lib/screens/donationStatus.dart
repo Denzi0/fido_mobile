@@ -70,9 +70,9 @@ class _DonationsState extends State<Donations> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                          "Donation ID : ${list[index]['donationID']}"),
-                                      SizedBox(height: 20.0),
+                                      // Text(
+                                      //     "Donation ID : ${list[index]['donationID']}"),
+                                      // SizedBox(height: 20.0),
                                       Text(
                                           "Donation name : ${list[index]['donationName']}"),
                                       SizedBox(height: 20.0),

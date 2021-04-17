@@ -14,6 +14,7 @@ import 'package:ff_navigation_bar/ff_navigation_bar.dart';
 import 'package:workmanager/workmanager.dart';
 
 const orgNoti = "orgNoti";
+var orgUname = '';
 void showNotification(id, v, y, flp) async {
   var android = AndroidNotificationDetails(
       'ChannelID', 'channel NAME', 'CHANNEL DESCRIPTION',
@@ -21,6 +22,11 @@ void showNotification(id, v, y, flp) async {
   var iOS = IOSNotificationDetails();
   var platform = NotificationDetails(android: android, iOS: iOS);
   await flp.show(id, '$y', '$v', platform, payload: 'VIS \n $v');
+}
+
+void globalVariable(orgUsername) {
+  orgUname = orgUsername;
+  return;
 }
 
 void start() async {
@@ -47,7 +53,7 @@ void callbackDispatcher() {
     var response =
         await http.post('http://$myip/phpPractice/mobile/sample.php');
     var org = json.decode(response.body);
-    var orgconvert = org.where((i) => i['orgName'] == 'Alay lakad').toList();
+    var orgconvert = org.where((i) => i['orgName'] == "House of Hope").toList();
     print("Array $orgconvert");
     if (true) {
       // showNotification(0, "Donation Status", "Your donation from", flp);
@@ -65,15 +71,22 @@ void callbackDispatcher() {
   });
 }
 
+// ignore: must_be_immutable
 class WelcomeOrg extends StatefulWidget {
+  String orgUsername;
+  WelcomeOrg({Key key, @required this.orgUsername}) : super(key: key);
   @override
-  _WelcomeOrgState createState() => _WelcomeOrgState();
+  _WelcomeOrgState createState() => _WelcomeOrgState(this.orgUsername);
 }
 
 class _WelcomeOrgState extends State<WelcomeOrg> {
+  String orgUsername;
+  _WelcomeOrgState(this.orgUsername);
   @override
   void initState() {
     super.initState();
+    print(orgNoti);
+    // globalVariable(orgUsername);
     start();
   }
   //data from orglogin

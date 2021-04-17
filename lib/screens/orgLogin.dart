@@ -47,7 +47,9 @@ class _OrgLoginState extends State<OrgLogin> {
             fontSize: 16.0);
 
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => WelcomeOrg()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => WelcomeOrg(orgUsername: _orgname.text)));
       } else {
         Fluttertoast.showToast(
             msg: "Invalid Credentials",

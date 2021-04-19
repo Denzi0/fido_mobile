@@ -64,7 +64,7 @@ class _MatchDonationState extends State<MatchDonation> {
       var data = json.decode(response.body);
       if (data == "Success") {
         Fluttertoast.showToast(
-            msg: "Donated to Org",
+            msg: "Donated to Organization",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
@@ -125,6 +125,7 @@ class _MatchDonationState extends State<MatchDonation> {
                     // _buildFoodDonFormField(
                     //     label: "Food Title", name: foodtitle),
                     _buildFoodDonFormField(
+                      hintName: 'e.g Canned Goods, Bottled Water etc..',
                       label: "Donation Name",
                       name: donationname,
                     ),
@@ -169,7 +170,11 @@ class _MatchDonationState extends State<MatchDonation> {
                       height: 20.0,
                     ),
                     _buildFoodDonFormField(
-                        label: "Description", lines: 4, name: description),
+                      label: "Description",
+                      lines: 4,
+                      name: description,
+                      hintName: 'Details of your donation..',
+                    ),
                     SizedBox(
                       height: 20.0,
                     ),

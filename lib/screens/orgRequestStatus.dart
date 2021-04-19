@@ -1,5 +1,6 @@
 import 'package:fido_project/constants/constantsVariable.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +24,12 @@ class _RequestState extends State<Request> {
     setState(() {
       orgname = preferences.getString('orgname');
     });
+  }
+
+  Future deleteRequest(requestID) async {
+    var response = http.post(
+        "http://$myip/phpPractice/mobile/deleteRequestApi.php",
+        body: {"requestID": requestID});
   }
 
   @override
@@ -55,6 +62,14 @@ class _RequestState extends State<Request> {
                             child: Padding(
                               padding: EdgeInsets.all(10.0),
                               child: ListTile(
+                                trailing: IconButton(
+                                  icon: Icon(FontAwesomeIcons.timesCircle),
+                                  tooltip: 'Delete Request',
+                                  onPressed: () {
+                                    deleteRequest(list[index]['requestID']);
+                                    print("pressdelete");
+                                  },
+                                ),
                                 // isThreeLine: true,
                                 // title: Text(
                                 //     "Request ID : ${list[index]['requestID']}"),

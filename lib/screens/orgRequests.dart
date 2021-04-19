@@ -19,6 +19,9 @@ class _OrgRequests extends State<OrgRequests> {
   File imageFile;
   String imageData;
   final picker = ImagePicker();
+  var _currentSelectedValue;
+
+  var _currencies = ["Food", "Item", "Clothes", "Both Food and Item", "Others"];
 
   // current date time
   static final DateTime now = DateTime.now();
@@ -80,6 +83,7 @@ class _OrgRequests extends State<OrgRequests> {
         'images': imageData != null ? imageData : "",
         'orgname': orgname,
         'name': name.text,
+        'type': _currentSelectedValue.toString(),
         'quantity': quantity.text,
         'description': description.text,
         'isUrgent': isUrgent ? '1' : '0',
@@ -101,7 +105,7 @@ class _OrgRequests extends State<OrgRequests> {
       var data = json.decode(response.body);
       if (data == "Success") {
         Fluttertoast.showToast(
-            msg: "Success",
+            msg: "Request Sent",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
@@ -116,6 +120,7 @@ class _OrgRequests extends State<OrgRequests> {
       {String label,
       TextEditingController controllerName,
       TextInputType keyType,
+      String hint,
       int lines}) {
     return TextFormField(
         maxLines: lines,
@@ -127,7 +132,10 @@ class _OrgRequests extends State<OrgRequests> {
             return null;
           }
         },
-        decoration: InputDecoration(labelText: label),
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: hint,
+        ),
         keyboardType: keyType);
   }
 
@@ -149,11 +157,48 @@ class _OrgRequests extends State<OrgRequests> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildOrgRequestFormField(
-                        label: "Request Name", controllerName: name),
+                        hint: "e.g Canned Goods, Bottled Water etc..",
+                        label: "Donation Request",
+                        controllerName: name),
+                    SizedBox(height: 10.0),
+
+                    FormField<String>(
+                      builder: (FormFieldState<String> state) {
+                        return InputDecorator(
+                          decoration: InputDecoration(
+                            errorStyle: TextStyle(
+                                color: Colors.redAccent, fontSize: 16.0),
+                          ),
+                          isEmpty: _currentSelectedValue == '',
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              hint: Text("Type"),
+                              value: _currentSelectedValue,
+                              isDense: true,
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  _currentSelectedValue = newValue;
+                                  state.didChange(newValue);
+                                });
+                              },
+                              items: _currencies.map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 10.0),
+
                     _buildOrgRequestFormField(
                         label: "Quantity",
                         controllerName: quantity,
                         keyType: TextInputType.number),
+
                     // _buildOrgRequestFormField(
                     //     label: "Item Name", controllerName: itemname),
                     // _buildOrgRequestFormField(
@@ -202,7 +247,7 @@ class _OrgRequests extends State<OrgRequests> {
                               orgRequests();
                             },
                             color: kprimaryColor,
-                            child: Text("Request",
+                            child: Text("Request Donation",
                                 style: TextStyle(color: Colors.white))),
                       ),
                     ),

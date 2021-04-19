@@ -65,7 +65,7 @@ class _DonationHomeState extends State<DonationHome> {
       var data = json.decode(response.body);
       if (data == "Success") {
         Fluttertoast.showToast(
-            msg: "Donated to Org",
+            msg: "Donated to Organization",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
@@ -126,6 +126,7 @@ class _DonationHomeState extends State<DonationHome> {
                     // _buildFoodDonFormField(
                     //     label: "Food Title", name: foodtitle),
                     _buildFoodDonFormField(
+                      hintName: "e.g Canned Goods, Bottled Water etc..",
                       label: "Donation Name",
                       name: donationname,
                     ),

@@ -98,7 +98,7 @@ class _FoodandItemState extends State<FoodandItem> {
       maxLines: lines,
       validator: (value) {
         if (value.isEmpty) {
-          return "Please Input Food";
+          return "Please Input Details";
         } else {
           return null;
         }
@@ -134,6 +134,7 @@ class _FoodandItemState extends State<FoodandItem> {
                     // _buildFoodDonFormField(
                     //     label: "Food Title", name: foodtitle),
                     _buildFoodDonFormField(
+                      hintName: "e.g Canned Goods, Bottled Water etc..",
                       label: "Donation Name",
                       name: donationname,
                     ),

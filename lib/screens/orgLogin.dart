@@ -1,4 +1,6 @@
 import 'package:fido_project/constants/appNames.dart';
+import 'package:fido_project/screens/donorReg.dart';
+import 'package:fido_project/screens/orgReg.dart';
 import 'package:flutter/material.dart';
 import 'package:fido_project/constants/constantsVariable.dart';
 
@@ -136,6 +138,24 @@ class _OrgLoginState extends State<OrgLogin> {
                         ),
                       ),
                     ),
+                    SizedBox(height: 10),
+
+                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      Text("Register as organization ?",
+                          style: TextStyle(color: Color(0xff5b5b5b))),
+                      GestureDetector(
+                        child: Text(
+                          "  Click here",
+                          style: TextStyle(color: kprimaryColor),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RegisterOrg()));
+                        },
+                      ),
+                    ]),
                     SizedBox(height: 10),
 
                     Row(children: <Widget>[

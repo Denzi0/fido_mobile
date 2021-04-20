@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:fido_project/constants/constantsVariable.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -16,6 +17,24 @@ class OrgRequests extends StatefulWidget {
 }
 
 class _OrgRequests extends State<OrgRequests> {
+  //
+  List suggestionList = [
+    "Noodles",
+    "Bottled Water",
+    "Pencil",
+    "Books",
+    "Rice",
+    "Canned Sardines",
+    "Canned Tuna",
+    "Canned Soup",
+    "Blanket",
+    "Pillow",
+    "Shirt",
+    "Jeans",
+    "Pants",
+    "Tissue",
+  ];
+  //
   File imageFile;
   String imageData;
   final picker = ImagePicker();
@@ -43,9 +62,12 @@ class _OrgRequests extends State<OrgRequests> {
     getOrgname();
   }
 
+  GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
+
   ///////
+  ///
   TextEditingController checkedValue = TextEditingController();
-  TextEditingController name = TextEditingController();
+  var name = TextEditingController();
   TextEditingController quantity = TextEditingController();
   TextEditingController description = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -156,10 +178,37 @@ class _OrgRequests extends State<OrgRequests> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildOrgRequestFormField(
-                        hint: "e.g Canned Goods, Bottled Water etc..",
-                        label: "Donation Request",
-                        controllerName: name),
+                    AutoCompleteTextField(
+                        controller: name,
+                        itemSubmitted: (item) {
+                          name.text = item;
+                        },
+                        // clearOnSubmit: false,
+                        key: key,
+                        decoration: InputDecoration(
+                          hintText: "e.g Canned Goods, Bottled Water etc..",
+                        ),
+                        clearOnSubmit: false,
+                        suggestions: suggestionList,
+                        itemBuilder: (context, item) {
+                          return Container(
+                              padding: EdgeInsets.all(20.0),
+                              child: Row(
+                                children: [Text(item)],
+                              ));
+                        },
+                        itemSorter: (a, b) {
+                          return a.compareTo(b);
+                        },
+                        itemFilter: (item, query) {
+                          return item
+                              .toLowerCase()
+                              .startsWith(query.toLowerCase());
+                        }),
+                    // _buildOrgRequestFormField(
+                    //     hint: "e.g Canned Goods, Bottled Water etc..",
+                    //     label: "Donation Request",
+                    //     controllerName: name),
                     SizedBox(height: 10.0),
 
                     FormField<String>(
@@ -210,11 +259,12 @@ class _OrgRequests extends State<OrgRequests> {
                     _buildOrgRequestFormField(
                         label: "Description",
                         controllerName: description,
+                        hint: "Input Donation Request Details...",
                         keyType: TextInputType.number,
                         lines: 4),
                     CheckboxListTile(
-                      title:
-                          Text("Is this an urgent Donation ? "), //    <-- label
+                      title: Text(
+                          "Is this an urgent Donation ?       Yes"), //    <-- label
                       value: isUrgent,
                       onChanged: (bool newValue) {
                         print(newValue);

@@ -14,24 +14,30 @@ import 'dart:convert';
 
 class MatchDonation extends StatefulWidget {
   String requestID;
+  String orgRequestName;
+
   String orgDescription;
   String orgName;
   MatchDonation(
       {Key key,
+      @required this.orgRequestName,
       @required this.requestID,
       @required this.orgDescription,
       @required this.orgName})
       : super(key: key);
   @override
-  _MatchDonationState createState() =>
-      _MatchDonationState(this.requestID, this.orgDescription, this.orgName);
+  _MatchDonationState createState() => _MatchDonationState(
+      this.requestID, this.orgDescription, this.orgName, this.orgRequestName);
 }
 
 class _MatchDonationState extends State<MatchDonation> {
+  String orgRequestName;
   String requestID;
+
   String orgDescription;
   String orgName;
-  _MatchDonationState(this.requestID, this.orgDescription, this.orgName);
+  _MatchDonationState(
+      this.requestID, this.orgDescription, this.orgName, this.orgRequestName);
 
   var _currencies = ["Food", "Item", "Clothes", "Both Food and Item", "Others"];
   String donorUsername = "";
@@ -95,6 +101,9 @@ class _MatchDonationState extends State<MatchDonation> {
   void initState() {
     super.initState();
     getdonorFood();
+    setState(() {
+      donationname.text = orgRequestName;
+    });
     print(donorUsername);
     print(orgDescription);
   }
@@ -125,7 +134,6 @@ class _MatchDonationState extends State<MatchDonation> {
                     // _buildFoodDonFormField(
                     //     label: "Food Title", name: foodtitle),
                     _buildFoodDonFormField(
-                      hintName: 'e.g Canned Goods, Bottled Water etc..',
                       label: "Donation Name",
                       name: donationname,
                     ),
@@ -209,8 +217,10 @@ Widget _buildFoodDonFormField(
     @required TextEditingController name,
     String hintName}) {
   return TextFormField(
+    // initialValue: initialString,
     controller: name,
     maxLines: lines,
+    // initialValue: "he",
     validator: (value) {
       if (value.isEmpty) {
         return "Please Input Food";

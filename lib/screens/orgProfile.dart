@@ -1,4 +1,5 @@
 import 'package:fido_project/alertDialog.dart';
+import 'package:fido_project/screens/orgAccount.dart';
 import 'package:fido_project/screens/orgLogin.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,11 +14,11 @@ class OrgProfile extends StatefulWidget {
 }
 
 class _OrgProfileState extends State<OrgProfile> {
-  String username = "";
+  String _username = "";
   Future getUsername() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
-      username = preferences.getString('orgname');
+      _username = preferences.getString('orgname');
     });
   }
 
@@ -46,9 +47,9 @@ class _OrgProfileState extends State<OrgProfile> {
             child: Padding(
                 padding: EdgeInsets.all(24),
                 child: Center(
-                    child: username == ''
+                    child: _username == ''
                         ? Text('')
-                        : Text("Hello $username",
+                        : Text("Hello $_username",
                             style: TextStyle(fontSize: 20)))),
           ),
           Card(
@@ -57,8 +58,8 @@ class _OrgProfileState extends State<OrgProfile> {
             title: Text('Account'),
             subtitle: Text('Edit Account details'),
             onTap: () {
-              Navigator.push(
-                  context, CupertinoPageRoute(builder: (context) => Account()));
+              Navigator.push(context,
+                  CupertinoPageRoute(builder: (context) => OrgAccount()));
             },
           )),
           Card(

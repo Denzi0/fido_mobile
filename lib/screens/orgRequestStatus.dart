@@ -43,7 +43,7 @@ class _RequestState extends State<Request> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("My request"),
+          title: Text("My Donation Requests"),
           backgroundColor: kprimaryColor,
           automaticallyImplyLeading: false,
         ),

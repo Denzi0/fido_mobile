@@ -128,18 +128,6 @@ class _HomeState extends State<Home> {
         ),
         body: Column(
           children: [
-            // _adminRequest != null
-            //     ? Expanded(
-            //         child: ListView.builder(
-            //             itemCount: _adminRequest.length,
-            //             itemBuilder: (context, index) {
-            //               _adminList = _adminRequest;
-
-            //               return ListTile(
-            //                   title: Text(_adminList[index]['EmpID']));
-            //             }),
-            //       )
-            //     : Container(),
             Expanded(
                 child: _categoryListDisplay == null
                     ? Center(child: Text("Loading..."))
@@ -177,7 +165,8 @@ class _HomeState extends State<Home> {
   }
 
   _listItem(list, index) {
-    return list[index]['statusDescription'] == "Approved"
+    return list[index]['statusDescription'] == "Approved" &&
+            int.parse(list[index]['quantity']) > 0
         ? Container(
             margin: EdgeInsets.all(20.0),
             child: Card(
@@ -219,6 +208,8 @@ class _HomeState extends State<Home> {
                                             CupertinoPageRoute(
                                                 builder: (context) =>
                                                     MatchDonation(
+                                                        orgRequestName:
+                                                            list[index]['name'],
                                                         orgName: list[index]
                                                             ['orgName'],
                                                         orgDescription:

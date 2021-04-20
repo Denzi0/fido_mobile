@@ -39,6 +39,7 @@ dependencies:
   ff_navigation_bar: ^0.1.4
   workmanager:
   flutter_local_notifications:
+  autocomplete_textfield: ^1.7.3
 
 dev_dependencies:
   flutter_test:

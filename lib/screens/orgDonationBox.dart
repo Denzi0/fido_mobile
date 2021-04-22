@@ -22,6 +22,14 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
     return json.decode(response.body);
   }
 
+  void donationRecieved(donationBoxID, trackingNumber) async {
+    var url = 'http://$myip/phpPractice/mobile/trackingDeliverDonationApi.php';
+    var response = await http.post(url, body: {
+      'donation_boxID': donationBoxID,
+      'trackingNumber': trackingNumber.toString()
+    });
+  }
+
   Future getUsername() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
@@ -86,9 +94,23 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
                                         "Donation Status : ${list[index]['statusDescription']}",
                                         style: TextStyle(color: Colors.green),
                                       ),
+                                      SizedBox(height: 10),
+                                      ButtonTheme(
+                                        height: 40.0,
+                                        child: RaisedButton(
+                                            onPressed: () {
+                                              donationRecieved(
+                                                  list[index]['donation_boxID'],
+                                                  7);
+                                            },
+                                            color: kprimaryColor,
+                                            child: Text("Donation Recieved",
+                                                style: TextStyle(
+                                                    color: Colors.white))),
+                                      )
                                     ]),
                                 trailing: list[index]['statusDescription'] ==
-                                        "Claimed by Organization"
+                                        "Claimed By Organization"
                                     ? IconButton(
                                         icon: Icon(FontAwesomeIcons.commentAlt),
                                         tooltip: 'Delete donation',
@@ -97,10 +119,7 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
                                               context,
                                               CupertinoPageRoute(
                                                   builder: (context) =>
-                                                      OrgFeedback(
-                                                          donation_boxID: list[
-                                                                  index][
-                                                              'donation_boxID'])));
+                                                      OrgFeedback()));
                                         },
                                       )
                                     : Text("")),

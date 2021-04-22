@@ -39,9 +39,22 @@ class _OrgRequests extends State<OrgRequests> {
   String imageData;
   final picker = ImagePicker();
   var _currentSelectedValue;
+  var _currentSelectedValueImportance;
+  var _currentSelectedValueUrgency;
 
   var _currencies = ["Food", "Item", "Clothes", "Both Food and Item", "Others"];
+  var _currenciesImportance = [
+    "Not important",
+    "Flood and flashflood victims",
+    "House Fire victims",
+    "Typhoon victims",
+    "Earthquake victims"
+  ];
 
+  var _currenciesUrgency = [
+    "Not Urgent",
+    "Urgent",
+  ];
   // current date time
   static final DateTime now = DateTime.now();
   static final DateFormat formatter = DateFormat('yyyy-MM-dd');
@@ -71,7 +84,6 @@ class _OrgRequests extends State<OrgRequests> {
   TextEditingController quantity = TextEditingController();
   TextEditingController description = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool isUrgent = false;
 
   static const ADD_CATEGORY_URL =
       "http://$myip/phpPractice/mobile/orgrequestapi.php";
@@ -108,7 +120,14 @@ class _OrgRequests extends State<OrgRequests> {
         'type': _currentSelectedValue.toString(),
         'quantity': quantity.text,
         'description': description.text,
-        'isUrgent': isUrgent ? '1' : '0',
+        'importance':
+            _currenciesImportance.indexOf(_currentSelectedValueImportance) > 0
+                ? '10'
+                : '0',
+        // 'isUrgent': isUrgent ? '1' : '0',
+        'isUrgent':
+            _currenciesUrgency.indexOf(_currentSelectedValueUrgency).toString(),
+
         'daterequest': currentdate
       });
 
@@ -179,6 +198,7 @@ class _OrgRequests extends State<OrgRequests> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AutoCompleteTextField(
+                        // validator: _validateEmail,
                         controller: name,
                         itemSubmitted: (item) {
                           name.text = item;
@@ -262,17 +282,99 @@ class _OrgRequests extends State<OrgRequests> {
                         hint: "Input Donation Request Details...",
                         keyType: TextInputType.number,
                         lines: 4),
-                    CheckboxListTile(
-                      title: Text(
-                          "Is this an urgent Donation ?       Yes"), //    <-- label
-                      value: isUrgent,
-                      onChanged: (bool newValue) {
-                        print(newValue);
-                        setState(() {
-                          isUrgent = newValue;
-                        });
+
+                    ///Priotization
+                    ///Priotization
+                    SizedBox(height: 20.0),
+                    Text("Purpose:"),
+                    SizedBox(height: 10.0),
+
+                    ///Priotization
+                    FormField<String>(
+                      builder: (FormFieldState<String> state) {
+                        return InputDecorator(
+                          decoration: InputDecoration(
+                            errorStyle: TextStyle(
+                                color: Colors.redAccent, fontSize: 16.0),
+                          ),
+                          isEmpty: _currentSelectedValueImportance == '',
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              hint: Text("Purpose"),
+                              value: _currentSelectedValueImportance,
+                              isDense: true,
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  _currentSelectedValueImportance = newValue;
+                                  state.didChange(newValue);
+                                });
+                              },
+                              items: _currenciesImportance.map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        );
                       },
                     ),
+
+                    ///Priotization
+                    ///Priotization
+                    ///Priotization
+
+                    // CheckboxListTile(
+                    //   title: Text("Urgent Request ?      "), //    <-- label
+                    //   value: isUrgent,
+                    //   onChanged: (bool newValue) {
+                    //     print(newValue);
+                    //     setState(() {
+                    //       isUrgent = newValue;
+                    //     });
+                    //   },
+                    // ),
+
+                    //Urgency
+                    //Urgency
+                    //Urgency
+                    SizedBox(height: 20.0),
+                    Text("Urgency: "),
+                    SizedBox(height: 10.0),
+                    FormField<String>(
+                      builder: (FormFieldState<String> state) {
+                        return InputDecorator(
+                          decoration: InputDecoration(
+                            errorStyle: TextStyle(
+                                color: Colors.redAccent, fontSize: 16.0),
+                          ),
+                          isEmpty: _currentSelectedValueUrgency == '',
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              hint: Text("Urgency"),
+                              value: _currentSelectedValueUrgency,
+                              isDense: true,
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  _currentSelectedValueUrgency = newValue;
+                                  state.didChange(newValue);
+                                });
+                              },
+                              items: _currenciesUrgency.map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    //Urgency
+                    //Urgency
+                    //
                     IconButton(
                         icon: Icon(FontAwesomeIcons.image),
                         onPressed: () {

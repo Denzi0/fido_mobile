@@ -93,13 +93,24 @@ class _RegisterState extends State<Register> {
     );
   }
 
+  String validateEmail(String value) {
+    Pattern pattern =
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?)*$";
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value) || value == null)
+      return 'Enter a valid email address';
+    else
+      return null;
+  }
+
   Widget _buildemailField() {
     return TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      controller: _email,
-      decoration: InputDecoration(labelText: "Email"),
-      validator: (e) => e.isEmpty ? "Please input email" : null,
-    );
+        keyboardType: TextInputType.emailAddress,
+        controller: _email,
+        decoration: InputDecoration(labelText: "Email"),
+        validator: validateEmail);
   }
 
   Widget _buildageField() {
@@ -116,6 +127,7 @@ class _RegisterState extends State<Register> {
   Widget _buildcontactField() {
     return TextFormField(
       controller: _contact,
+      maxLength: 11,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(labelText: "Contact"),
       validator: (e) => e.isEmpty ? "Please input contact" : null,

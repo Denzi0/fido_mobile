@@ -7,6 +7,8 @@ import 'dart:convert';
 import 'package:fido_project/screens/donorLogin.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 
 class RegisterOrg extends StatefulWidget {
   @override
@@ -37,9 +39,11 @@ class _RegisterOrgState extends State<RegisterOrg> {
         .join();
   }
 
+  // String orgrandompassword = generateRandomString(5);
   //
   Future registerOrg() async {
     if (_formKey.currentState.validate()) {
+      String orgrandompassword = generateRandomString(5);
       var url = "http://$myip/phpPractice/mobile/registerorgapi.php";
 
       var response = await http.post(url, body: {
@@ -51,7 +55,7 @@ class _RegisterOrgState extends State<RegisterOrg> {
         "website": _website.text,
         "email": _email.text,
         "tinNumber": _tinNo.text,
-        "randompassword": generateRandomString(5)
+        "randompassword": orgrandompassword
       });
       var data = json.decode(response.body);
       if (data == "Error") {
@@ -64,8 +68,38 @@ class _RegisterOrgState extends State<RegisterOrg> {
             textColor: Colors.white,
             fontSize: 16.0);
       } else {
+        String username = 'denzellanzaderas@gmail.com';
+        String password = 'denziolanzx44';
+
+        final smtpServer = gmail(username, password);
+        // Use the SmtpServer class to configure an SMTP server:
+        // final smtpServer = SmtpServer('smtp.domain.com');
+        // See the named arguments of SmtpServer for further configuration
+        // options.
+
+        // Create our message.
+        final message = Message()
+          ..from = Address(username, 'Food and Item Donation Tracking Sytem')
+          ..recipients.add('${_email.text}')
+          // ..ccRecipients.addAll(['destCc1@example.com', 'destCc2@example.com'])
+          // ..bccRecipients.add(Address('bccAddress@example.com'))
+          ..subject = 'Test Dart Mailer library ::  :: ${DateTime.now()}'
+          ..text = 'This is the plain text.\nThis is line 2 of the text part.'
+          ..html =
+              "<h3>Thank you for registering . Below is your login credentials</h3>\n<p></p>Username : ${_organizationname.text}<p>Password : $orgrandompassword</p>";
+
+        try {
+          final sendReport = await send(message, smtpServer);
+          print('Message sent: ' + sendReport.toString());
+        } on MailerException catch (e) {
+          print('Message not sent.');
+          for (var p in e.problems) {
+            print('Problem: ${p.code}: ${p.msg}');
+          }
+        }
+
         Fluttertoast.showToast(
-            msg: "Successfully Registered",
+            msg: "Successfully Registered Message sent via Email",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
@@ -120,12 +154,24 @@ class _RegisterOrgState extends State<RegisterOrg> {
     );
   }
 
+  String validateEmail(String value) {
+    Pattern pattern =
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?)*$";
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value) || value == null)
+      return 'Enter a valid email address';
+    else
+      return null;
+  }
+
   Widget _buildemailField() {
     return TextFormField(
       controller: _email,
       // obscureText: true,
       decoration: InputDecoration(labelText: "Email"),
-      validator: (e) => e.isEmpty ? "Please input value" : null,
+      validator: validateEmail,
     );
   }
 

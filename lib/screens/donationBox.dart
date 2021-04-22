@@ -1,8 +1,11 @@
 import 'package:fido_project/constants/constantsVariable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fido_project/alertDialog.dart';
 
 class DonationBox extends StatefulWidget {
   @override
@@ -12,11 +15,36 @@ class DonationBox extends StatefulWidget {
 class _DonationBoxState extends State<DonationBox> {
   String orgUsername = "";
   String donorUsername = "";
-
+  List orgList;
+  List orgdetailsList;
   Future getDonationBox() async {
     var url = "http://$myip/phpPractice/mobile/donationBoxApi.php";
     var response = await http.post(url, body: {'donorUsername': donorUsername});
     return json.decode(response.body);
+  }
+
+  void deliverDonation(donationBoxID, trackingNumber) async {
+    var url = "http://$myip/phpPractice/mobile/trackingDeliverDonationApi.php";
+    var response = await http.post(url, body: {
+      'donation_boxID': donationBoxID,
+      'trackingNumber': trackingNumber.toString()
+    });
+    var data = json.decode(response.body);
+    if (data == "Success") {
+      print("Success");
+    }
+  }
+
+  void organizationDetails(orgName) async {
+    print(orgName);
+    var url = "http://$myip/phpPractice/mobile/trackingOrgDetailsApi.php";
+    var response = await http.post(url, body: {'orgusername': orgName});
+    var data = json.decode(response.body);
+
+    setState(() {
+      orgdetailsList = data;
+    });
+    print(orgdetailsList);
   }
 
   Future getUsername() async {
@@ -32,6 +60,9 @@ class _DonationBoxState extends State<DonationBox> {
   @override
   void initState() {
     super.initState();
+    // print(orgdetailsList);
+    // organizationDetails();
+
     getUsername();
   }
 
@@ -94,7 +125,122 @@ class _DonationBoxState extends State<DonationBox> {
                                         "Donation Status : ${list[index]['statusDescription']}",
                                         style: TextStyle(color: Colors.green),
                                       ),
+                                      SizedBox(height: 10),
+                                      Wrap(children: [
+                                        ButtonTheme(
+                                          height: 40.0,
+                                          child: list[index]
+                                                      ['statusDescription'] ==
+                                                  'Pending'
+                                              ? RaisedButton(
+                                                  onPressed: () {
+                                                    deliverDonation(
+                                                        list[index]
+                                                            ['donation_boxID'],
+                                                        2);
+                                                  },
+                                                  color: kprimaryColor,
+                                                  child: Text("Donation Ready",
+                                                      style: TextStyle(
+                                                          color: Colors.white)))
+                                              : list[index]['statusDescription'] ==
+                                                      'Donation Ready to Deliver'
+                                                  ? RaisedButton(
+                                                      onPressed: () {
+                                                        deliverDonation(
+                                                            list[index][
+                                                                'donation_boxID'],
+                                                            3);
+                                                      },
+                                                      color: kprimaryColor,
+                                                      child: Text(
+                                                          "Deliver Donation",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .white)))
+                                                  : list[index]['statusDescription'] ==
+                                                          'Donation-In-transit'
+                                                      ? RaisedButton(
+                                                          onPressed: () {
+                                                            deliverDonation(
+                                                                list[index][
+                                                                    'donation_boxID'],
+                                                                4);
+                                                          },
+                                                          color: kprimaryColor,
+                                                          child: Text("Drop-off",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white)))
+                                                      : Container(),
+                                        ),
+                                        // ButtonTheme(
+                                        //   height: 40.0,
+                                        //   child: RaisedButton(
+                                        //       onPressed: () {
+                                        //         print(
+                                        //             "For pick up by organization");
+                                        //       },
+                                        //       color: kprimaryColor,
+                                        //       child: Text("For pick-up by org",
+                                        //           style: TextStyle(
+                                        //               color: Colors.white))),
+                                        // )
+                                      ])
                                     ]),
+                                trailing: IconButton(
+                                  icon: Icon(FontAwesomeIcons.infoCircle),
+                                  tooltip: 'Organization details',
+                                  onPressed: () {
+                                    organizationDetails(list[index]['orgName']);
+                                    showModalBottomSheet<void>(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return Container(
+                                          height: 200,
+                                          color: Colors.amber,
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Expanded(
+                                                  child: SizedBox(
+                                                    child: ListView.builder(
+                                                        shrinkWrap:
+                                                            true, // use it
+                                                        itemCount:
+                                                            orgdetailsList
+                                                                .length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          orgList =
+                                                              orgdetailsList;
+                                                          return ListTile(
+                                                            title: Text(orgList[
+                                                                    index]
+                                                                ['orgName']),
+                                                          );
+                                                        }),
+                                                  ),
+                                                ),
+                                                const Text('Modal BottomSheet'),
+                                                ElevatedButton(
+                                                  child: const Text(
+                                                      'Close BottomSheet'),
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                    // Navigator.push()
+                                  },
+                                ),
                               ),
                             ),
                           ),
@@ -104,3 +250,15 @@ class _DonationBoxState extends State<DonationBox> {
             }));
   }
 }
+// ListView.builder(
+//                                                     itemCount:
+//                                                         orgdetailsList.length,
+//                                                     itemBuilder:
+//                                                         (context, index) {
+//                                                       orgList = orgdetailsList;
+//                                                       return ListTile(
+//                                                         title: Text(
+//                                                             orgList[index]
+//                                                                 ['orgName']),
+//                                                       );
+//                                                     }),

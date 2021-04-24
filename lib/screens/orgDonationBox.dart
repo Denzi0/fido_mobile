@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -22,12 +23,31 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
     return json.decode(response.body);
   }
 
-  void donationRecieved(donationBoxID, trackingNumber) async {
-    var url = 'http://$myip/phpPractice/mobile/trackingDeliverDonationApi.php';
+  void donationRecieved(donationID, donationBoxID, trackingNumber) async {
+    var url =
+        'http://$myip/phpPractice/mobile/trackingOrgDeliverDonationApi.php';
     var response = await http.post(url, body: {
       'donation_boxID': donationBoxID,
-      'trackingNumber': trackingNumber.toString()
+      'trackingNumber': trackingNumber.toString(),
+      'donationID': donationID
     });
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg: "Donation Recieved",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: kprimaryColor,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+  }
+
+  void approvedDonation(donationBoxID) async {
+    print(donationBoxID);
+    var url = 'http://$myip/phpPractice/mobile/trackingApprovedApi.php';
+    var response =
+        await http.post(url, body: {'donation_boxID': donationBoxID});
   }
 
   Future getUsername() async {
@@ -50,7 +70,7 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text("Donation Box"),
+          title: Text("Organization Donation Box"),
           backgroundColor: kprimaryColor,
           automaticallyImplyLeading: false),
       body: FutureBuilder(
@@ -91,35 +111,68 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
                                           "Donor Donation : ${list[index]['donationName']}"),
                                       SizedBox(height: 10),
                                       Text(
+                                        "Donor Status : ${list[index]['donationStatus']}",
+                                        style: TextStyle(color: Colors.green),
+                                      ),
+                                      Text(
                                         "Donation Status : ${list[index]['statusDescription']}",
                                         style: TextStyle(color: Colors.green),
                                       ),
                                       SizedBox(height: 10),
-                                      ButtonTheme(
-                                        height: 40.0,
-                                        child: RaisedButton(
-                                            onPressed: () {
-                                              donationRecieved(
-                                                  list[index]['donation_boxID'],
-                                                  7);
-                                            },
-                                            color: kprimaryColor,
-                                            child: Text("Donation Recieved",
-                                                style: TextStyle(
-                                                    color: Colors.white))),
-                                      )
+                                      Row(children: [
+                                        list[index]['donationStatus'] == "5"
+                                            ? ButtonTheme(
+                                                height: 40.0,
+                                                child: RaisedButton(
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        donationRecieved(
+                                                            list[index]
+                                                                ['donationID'],
+                                                            list[index][
+                                                                'donation_boxID'],
+                                                            7);
+                                                      });
+                                                    },
+                                                    color: kprimaryColor,
+                                                    child: Text(
+                                                        "Donation Recieved",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white))),
+                                              )
+                                            : ButtonTheme(
+                                                height: 40.0,
+                                                child: RaisedButton(
+                                                    onPressed: () {
+                                                      approvedDonation(list[
+                                                              index]
+                                                          ['donation_boxID']);
+                                                    },
+                                                    color: kprimaryColor,
+                                                    child: Text("Approved",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white))),
+                                              ),
+                                        SizedBox(width: 10.0),
+                                      ])
                                     ]),
                                 trailing: list[index]['statusDescription'] ==
                                         "Claimed By Organization"
                                     ? IconButton(
                                         icon: Icon(FontAwesomeIcons.commentAlt),
-                                        tooltip: 'Delete donation',
+                                        tooltip: 'feedback donation',
                                         onPressed: () {
                                           Navigator.push(
                                               context,
                                               CupertinoPageRoute(
                                                   builder: (context) =>
-                                                      OrgFeedback()));
+                                                      OrgFeedback(
+                                                        donationboxID: list[
+                                                                index]
+                                                            ['donation_boxID'],
+                                                      )));
                                         },
                                       )
                                     : Text("")),

@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:fido_project/screens/home.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'globals.dart' as globals;
 
 class OrgRequests extends StatefulWidget {
   @override
@@ -22,7 +23,6 @@ class _OrgRequests extends State<OrgRequests> {
     "Noodles",
     "Bottled Water",
     "Pencil",
-    "Books",
     "Rice",
     "Canned Sardines",
     "Canned Tuna",
@@ -44,11 +44,11 @@ class _OrgRequests extends State<OrgRequests> {
 
   var _currencies = ["Food", "Item", "Clothes", "Both Food and Item", "Others"];
   var _currenciesImportance = [
-    "Not important",
-    "Flood and flashflood victims",
+    "For people in needs",
     "House Fire victims",
+    "Earthquake victims",
+    "Flood and flashflood victims",
     "Typhoon victims",
-    "Earthquake victims"
   ];
 
   var _currenciesUrgency = [
@@ -112,6 +112,7 @@ class _OrgRequests extends State<OrgRequests> {
 
   Future orgRequests() async {
     if (_formKey.currentState.validate()) {
+      print(_currenciesImportance.indexOf(_currentSelectedValueImportance));
       // var url = "http://192.168.254.106/phpPractice/mobile/orgrequestapi.php";
       var response = await http.post(ADD_CATEGORY_URL, body: {
         'images': imageData != null ? imageData : "",
@@ -120,13 +121,15 @@ class _OrgRequests extends State<OrgRequests> {
         'type': _currentSelectedValue.toString(),
         'quantity': quantity.text,
         'description': description.text,
-        'importance':
-            _currenciesImportance.indexOf(_currentSelectedValueImportance) > 0
-                ? '10'
-                : '0',
-        // 'isUrgent': isUrgent ? '1' : '0',
-        'isUrgent':
-            _currenciesUrgency.indexOf(_currentSelectedValueUrgency).toString(),
+        // 'importance':
+        //     _currenciesImportance.indexOf(_currentSelectedValueImportance) > 0
+        //         ? '10'
+        //         : '0',
+        // (_currenciesUrgency.indexOf(_currentSelectedValueUrgency) +
+        // _currenciesImportance.indexOf(_currentSelectedValueImportance))
+        'isUrgent': (_currenciesUrgency.indexOf(_currentSelectedValueUrgency) +
+                _currenciesImportance.indexOf(_currentSelectedValueImportance))
+            .toString(),
 
         'daterequest': currentdate
       });
@@ -184,7 +187,7 @@ class _OrgRequests extends State<OrgRequests> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text("Organization Request"),
+          title: Text("Organization Donation Request"),
           backgroundColor: kprimaryColor,
           automaticallyImplyLeading: false),
       body: Center(

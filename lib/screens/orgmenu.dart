@@ -1,10 +1,10 @@
-import 'package:fido_project/screens/donorProfile.dart';
 import 'package:fido_project/screens/orgRequests.dart';
 import 'package:fido_project/screens/orgRequestStatus.dart';
 import 'package:fido_project/screens/orgDonationBox.dart';
 import 'package:fido_project/screens/orgProfile.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'globals.dart' as globals;
 
 import 'package:fido_project/constants/constantsVariable.dart';
 import 'package:flutter/material.dart';
@@ -53,11 +53,9 @@ void callbackDispatcher() {
     var response =
         await http.post('http://$myip/phpPractice/mobile/sample.php');
     var org = json.decode(response.body);
-    var orgconvert = org.where((i) => i['orgName'] == "House of Hope").toList();
+    var orgconvert = org.where((i) => i['orgName'] == 'House of Hope').toList();
     print("Array $orgconvert");
     if (true) {
-      // showNotification(0, "Donation Status", "Your donation from", flp);
-      //
       for (var i = 0; i <= orgconvert.length - 1; i++) {
         showNotification(
             i,
@@ -85,6 +83,7 @@ class _WelcomeOrgState extends State<WelcomeOrg> {
   @override
   void initState() {
     super.initState();
+
     print(orgNoti);
     // globalVariable(orgUsername);
     start();

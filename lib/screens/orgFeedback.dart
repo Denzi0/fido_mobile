@@ -5,29 +5,29 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+// ignore: must_be_immutable
 class OrgFeedback extends StatefulWidget {
-  String donation_boxID;
+  String donationboxID;
 
-  OrgFeedback({Key key, this.donation_boxID}) : super(key: key);
+  OrgFeedback({Key key, this.donationboxID}) : super(key: key);
   @override
-  _OrgFeedbackState createState() => _OrgFeedbackState(this.donation_boxID);
+  _OrgFeedbackState createState() => _OrgFeedbackState(this.donationboxID);
 }
 
 class _OrgFeedbackState extends State<OrgFeedback> {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
-  String donation_boxID;
-  _OrgFeedbackState(this.donation_boxID);
+  String donationboxID;
+  _OrgFeedbackState(this.donationboxID);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController feedback = TextEditingController();
 
   Future orgFeedback() async {
-    print("click feedback");
     if (_formKey.currentState.validate()) {
       var response = await http
           .post("http://$myip/phpPractice/mobile/orgFeedbackApi.php", body: {
         'orgfeedback': feedback.text,
-        'orgdonation_boxID': donation_boxID
+        'orgdonation_boxID': donationboxID
       });
       var data = await json.decode(response.body);
       if (data == "Success") {
@@ -43,22 +43,6 @@ class _OrgFeedbackState extends State<OrgFeedback> {
       }
     }
   }
-
-  // Future click() async {
-  //   var response =
-  //       await http.post('http://192.168.254.106/phpPractice/mobile/sample.php');
-  //   print("here================");
-  //   var convert = json.decode(response.body);
-  //   var convert2 = convert.where((i) => i['orgName'] == 'Alay lakad').toList();
-  //   print(convert2);
-  //   if (true) {
-  //     for (var i = 0; i <= convert2.length - 1; i++) {
-  //       print("printed ${convert2[i]['statusDescription']}");
-  //     }
-  //   } else {
-  //     print("no mesage");
-  //   }
-  // }
 
   @override
   void initState() {

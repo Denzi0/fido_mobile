@@ -100,8 +100,10 @@ class _DonationsState extends State<Donations> {
                                   icon: Icon(FontAwesomeIcons.timesCircle),
                                   tooltip: 'Delete donation',
                                   onPressed: () {
-                                    deleteDonation(list[index]['donationID']);
-                                    print("pressdelete");
+                                    setState(() {
+                                      deleteDonation(list[index]['donationID']);
+                                      print("pressdelete");
+                                    });
                                   },
                                 ),
                               ),

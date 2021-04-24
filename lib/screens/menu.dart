@@ -5,6 +5,7 @@ import 'package:fido_project/screens/donorProfile.dart';
 import 'package:fido_project/screens/donationStatus.dart';
 import 'package:fido_project/screens/donationBox.dart';
 import 'package:http/http.dart' as http;
+import 'globals.dart' as globals;
 
 import 'package:flutter/material.dart';
 import 'package:fido_project/screens/home.dart';
@@ -55,7 +56,10 @@ void callbackDispatcher() {
     var response =
         await http.post('http://$myip/phpPractice/mobile/sample.php');
     var convert = json.decode(response.body);
-    var convert2 = convert.where((i) => i['donorName'] == 'John Doe').toList();
+    var convert2 = convert
+        .where((i) =>
+            i['donorName'].toLowerCase() == globals.donornameNoti.toLowerCase())
+        .toList();
     print("Array $convert2");
     if (true) {
       // showNotification(0, "Donation Status", "Your donation from", flp);

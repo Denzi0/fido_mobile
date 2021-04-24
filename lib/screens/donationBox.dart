@@ -33,10 +33,12 @@ class _DonationBoxState extends State<DonationBox> {
       'donation_boxID': donationBoxID,
       'trackingNumber': trackingNumber.toString()
     });
+
     var data = json.decode(response.body);
     if (data == "Success") {
       print("Success");
     }
+    setState(() {});
   }
 
   void organizationDetails(orgName) async {
@@ -47,7 +49,8 @@ class _DonationBoxState extends State<DonationBox> {
     setState(() {
       orgdetailsList = data;
     });
-    print(orgdetailsList);
+    // print(orgdetailsList);
+    setState(() {});
   }
 
   Future getUsername() async {
@@ -81,217 +84,226 @@ class _DonationBoxState extends State<DonationBox> {
             builder: (context, snapshot) {
               if (snapshot.hasError) print(snapshot.error);
               return snapshot.hasData
-                  ? ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        List list = snapshot.data;
-                        return Container(
-                          margin: EdgeInsets.all(5.0),
-                          child: Card(
-                            child: Padding(
-                              padding: EdgeInsets.all(10.0),
-                              child: ListTile(
-                                // isThreeLine: true,
-                                title: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      // Text(
-                                      //     "Donation ID :${list[index]['donationID']}"),
-                                      // SizedBox(height: 10),
-                                      Text(
-                                          "Donation Box ID : ${list[index]['donation_boxID']}"),
-                                    ]),
+                  ? RefreshIndicator(
+                      key: _refreshIndicatorKey,
+                      onRefresh: getRefresh,
+                      child: ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context, index) {
+                            List list = snapshot.data;
+                            return Container(
+                              margin: EdgeInsets.all(5.0),
+                              child: Card(
+                                child: Padding(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: ListTile(
+                                    // isThreeLine: true,
+                                    title: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          // Text(
+                                          //     "Donation ID :${list[index]['donationID']}"),
+                                          // SizedBox(height: 10),
+                                          Text(
+                                              "Donation Box ID : ${list[index]['donation_boxID']}"),
+                                        ]),
 
-                                subtitle: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(height: 10),
-                                      Text(
-                                          "Organization Name : ${list[index]['orgName']}"),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        "Donation Request Name : ${list[index]['name']}",
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        "My donation : ${list[index]['donationName']}",
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                          "Donation Quantity : ${list[index]['donation_quantity']}"),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        "Donor : ${list[index]['donationStatus']}",
-                                      ),
-                                      Text(
-                                        "Feedback : ${list[index]['orgFeedback']}",
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        "Donation Status : ${list[index]['statusDescription']}",
-                                        style: TextStyle(color: Colors.green),
-                                      ),
+                                    subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: 10),
+                                          Text(
+                                              "Organization Name : ${list[index]['orgName']}"),
+                                          SizedBox(height: 10),
+                                          Text(
+                                            "Donation Request Name : ${list[index]['name']}",
+                                          ),
+                                          SizedBox(height: 10),
+                                          Text(
+                                            "My donation : ${list[index]['donationName']}",
+                                          ),
+                                          SizedBox(height: 10),
+                                          Text(
+                                              "Donation Quantity : ${list[index]['donation_quantity']}"),
+                                          SizedBox(height: 10),
+                                          Text(
+                                            "Donor : ${list[index]['donationStatus']}",
+                                          ),
+                                          Text(
+                                            "Feedback : ${list[index]['orgFeedback']}",
+                                          ),
+                                          SizedBox(height: 10),
+                                          Text(
+                                            "Donation Status : ${list[index]['statusDescription']}",
+                                            style:
+                                                TextStyle(color: Colors.green),
+                                          ),
 
-                                      // SizedBox(height: 10),
+                                          // SizedBox(height: 10),
 
 ///////////////
-                                      ///
-                                      list[index]['donationStatus'] == '5'
-                                          ? Wrap(children: [
-                                              ButtonTheme(
-                                                height: 40.0,
-                                                child: list[index][
-                                                            'statusDescription'] ==
-                                                        'Pending'
-                                                    ? RaisedButton(
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            deliverDonation(
-                                                                list[index][
-                                                                    'donation_boxID'],
-                                                                2);
-                                                          });
-                                                        },
-                                                        color: kprimaryColor,
-                                                        child: Text(
-                                                            "Donation Ready",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white)))
-                                                    : list[index]['statusDescription'] ==
-                                                            'Donation Ready to Deliver'
+                                          ///
+                                          list[index]['donationStatus'] == '5'
+                                              ? Wrap(children: [
+                                                  ButtonTheme(
+                                                    height: 40.0,
+                                                    child: list[index]['statusDescription'] ==
+                                                            'Pending'
                                                         ? RaisedButton(
                                                             onPressed: () {
-                                                              setState(() {
-                                                                deliverDonation(
-                                                                    list[index][
-                                                                        'donation_boxID'],
-                                                                    3);
-                                                              });
+                                                              deliverDonation(
+                                                                  list[index][
+                                                                      'donation_boxID'],
+                                                                  2);
                                                             },
                                                             color:
                                                                 kprimaryColor,
                                                             child: Text(
-                                                                "Deliver Donation",
+                                                                "Donation Ready",
                                                                 style: TextStyle(
                                                                     color: Colors
                                                                         .white)))
-                                                        : list[index]
-                                                                    ['statusDescription'] ==
-                                                                'Donation-In-transit'
+                                                        : list[index]['statusDescription'] ==
+                                                                'Donation Ready to Deliver'
                                                             ? RaisedButton(
                                                                 onPressed: () {
-                                                                  setState(() {
-                                                                    deliverDonation(
-                                                                        list[index]
-                                                                            [
-                                                                            'donation_boxID'],
-                                                                        4);
-                                                                  });
+                                                                  deliverDonation(
+                                                                      list[index]
+                                                                          [
+                                                                          'donation_boxID'],
+                                                                      3);
                                                                 },
-                                                                color: kprimaryColor,
-                                                                child: Text("Dropped-off", style: TextStyle(color: Colors.white)))
-                                                            : Container(),
-                                              ),
-                                              // ButtonTheme(
-                                              //   height: 40.0,
-                                              //   child: RaisedButton(
-                                              //       onPressed: () {
-                                              //         print(
-                                              //             "For pick up by organization");
-                                              //       },
-                                              //       color: kprimaryColor,
-                                              //       child: Text("For pick-up by org",
-                                              //           style: TextStyle(
-                                              //               color: Colors.white))),
-                                              // )
-                                            ])
-                                          : Text('')
-                                    ]),
-                                trailing: IconButton(
-                                  icon: Icon(FontAwesomeIcons.infoCircle),
-                                  tooltip: 'Organization details',
-                                  onPressed: () {
-                                    organizationDetails(list[index]['orgName']);
-                                    showModalBottomSheet<void>(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return Container(
-                                          height: 200,
-                                          color: Colors.white,
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                Expanded(
-                                                  child: SizedBox(
-                                                    child: ListView.builder(
-                                                        shrinkWrap:
-                                                            true, // use it
-                                                        itemCount:
-                                                            orgdetailsList
-                                                                .length,
-                                                        itemBuilder:
-                                                            (context, index) {
-                                                          orgList =
-                                                              orgdetailsList;
-                                                          return ListTile(
-                                                            title: Column(
-                                                                children: [
-                                                                  SizedBox(
-                                                                      height:
-                                                                          10.0),
-                                                                  Text(orgList[
-                                                                          index]
-                                                                      [
-                                                                      'orgName']),
-                                                                ]),
-                                                            subtitle: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                SizedBox(
-                                                                    height: 10),
-                                                                Text(
-                                                                    'Person-in-charge : ${orgList[index]['orgPersonInCharge']}'),
-                                                                SizedBox(
-                                                                    height: 10),
-                                                                Text(
-                                                                    'Address : ${orgList[index]['orgAddress']}'),
-                                                                SizedBox(
-                                                                    height: 10),
-                                                                Text(
-                                                                    'Contact : ${orgList[index]['orgContact']}')
-                                                              ],
-                                                            ),
-                                                          );
-                                                        }),
+                                                                color:
+                                                                    kprimaryColor,
+                                                                child: Text(
+                                                                    "Deliver Donation",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white)))
+                                                            : list[index]
+                                                                        ['statusDescription'] ==
+                                                                    'Donation-In-transit'
+                                                                ? RaisedButton(
+                                                                    onPressed: () {
+                                                                      deliverDonation(
+                                                                          list[index]
+                                                                              [
+                                                                              'donation_boxID'],
+                                                                          4);
+                                                                    },
+                                                                    color: kprimaryColor,
+                                                                    child: Text("Dropped-off", style: TextStyle(color: Colors.white)))
+                                                                : Container(),
                                                   ),
+                                                  // ButtonTheme(
+                                                  //   height: 40.0,
+                                                  //   child: RaisedButton(
+                                                  //       onPressed: () {
+                                                  //         print(
+                                                  //             "For pick up by organization");
+                                                  //       },
+                                                  //       color: kprimaryColor,
+                                                  //       child: Text("For pick-up by org",
+                                                  //           style: TextStyle(
+                                                  //               color: Colors.white))),
+                                                  // )
+                                                ])
+                                              : Text('')
+                                        ]),
+                                    trailing: IconButton(
+                                      icon: Icon(FontAwesomeIcons.mapMarkerAlt),
+                                      tooltip: 'Organization details',
+                                      onPressed: () {
+                                        organizationDetails(
+                                            list[index]['orgName']);
+                                        showModalBottomSheet<void>(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return Container(
+                                              height: 200,
+                                              color: Colors.white,
+                                              child: Center(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: <Widget>[
+                                                    Expanded(
+                                                      child: SizedBox(
+                                                        child: ListView.builder(
+                                                            shrinkWrap:
+                                                                true, // use it
+                                                            itemCount:
+                                                                orgdetailsList
+                                                                    .length,
+                                                            itemBuilder:
+                                                                (context,
+                                                                    index) {
+                                                              orgList =
+                                                                  orgdetailsList;
+                                                              return ListTile(
+                                                                title: Column(
+                                                                    children: [
+                                                                      SizedBox(
+                                                                          height:
+                                                                              10.0),
+                                                                      Text(orgList[
+                                                                              index]
+                                                                          [
+                                                                          'orgName']),
+                                                                    ]),
+                                                                subtitle:
+                                                                    Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    SizedBox(
+                                                                        height:
+                                                                            10),
+                                                                    Text(
+                                                                        'Person-in-charge : ${orgList[index]['orgPersonInCharge']}'),
+                                                                    SizedBox(
+                                                                        height:
+                                                                            10),
+                                                                    Text(
+                                                                        'Address : ${orgList[index]['orgAddress']}'),
+                                                                    SizedBox(
+                                                                        height:
+                                                                            10),
+                                                                    Text(
+                                                                        'Contact : ${orgList[index]['orgContact']}')
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            }),
+                                                      ),
+                                                    ),
+                                                    ElevatedButton(
+                                                      child:
+                                                          const Text('Close'),
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              context),
+                                                    )
+                                                  ],
                                                 ),
-                                                ElevatedButton(
-                                                  child: const Text('Close'),
-                                                  onPressed: () =>
-                                                      Navigator.pop(context),
-                                                )
-                                              ],
-                                            ),
-                                          ),
+                                              ),
+                                            );
+                                          },
                                         );
+                                        // Navigator.push()
                                       },
-                                    );
-                                    // Navigator.push()
-                                  },
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        );
-                      })
+                            );
+                          }),
+                    )
                   : CircularProgressIndicator();
             }));
   }

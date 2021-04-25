@@ -42,7 +42,8 @@ class _DonationBoxState extends State<DonationBox> {
   }
 
   void organizationDetails(orgName) async {
-    print(orgName);
+    setState(() {});
+
     var url = "http://$myip/phpPractice/mobile/trackingOrgDetailsApi.php";
     var response = await http.post(url, body: {'orgusername': orgName});
     var data = json.decode(response.body);
@@ -50,7 +51,6 @@ class _DonationBoxState extends State<DonationBox> {
       orgdetailsList = data;
     });
     // print(orgdetailsList);
-    setState(() {});
   }
 
   Future getUsername() async {
@@ -75,7 +75,7 @@ class _DonationBoxState extends State<DonationBox> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Donation Box"),
+          title: Text("Donor Donation Box"),
           automaticallyImplyLeading: false,
           backgroundColor: kprimaryColor,
         ),
@@ -131,6 +131,13 @@ class _DonationBoxState extends State<DonationBox> {
                                           Text(
                                             "Donor : ${list[index]['donationStatus']}",
                                           ),
+                                          SizedBox(height: 10),
+
+                                          Text(
+                                            "Date : ${list[index]['date_given']}",
+                                          ),
+                                          SizedBox(height: 10),
+
                                           Text(
                                             "Feedback : ${list[index]['orgFeedback']}",
                                           ),
@@ -197,18 +204,6 @@ class _DonationBoxState extends State<DonationBox> {
                                                                     child: Text("Dropped-off", style: TextStyle(color: Colors.white)))
                                                                 : Container(),
                                                   ),
-                                                  // ButtonTheme(
-                                                  //   height: 40.0,
-                                                  //   child: RaisedButton(
-                                                  //       onPressed: () {
-                                                  //         print(
-                                                  //             "For pick up by organization");
-                                                  //       },
-                                                  //       color: kprimaryColor,
-                                                  //       child: Text("For pick-up by org",
-                                                  //           style: TextStyle(
-                                                  //               color: Colors.white))),
-                                                  // )
                                                 ])
                                               : Text('')
                                         ]),

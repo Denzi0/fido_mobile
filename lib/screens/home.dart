@@ -190,7 +190,7 @@ class _HomeState extends State<Home> {
                           SizedBox(height: 10.0),
                           Text("Request name :${list[index]['name']}"),
                           SizedBox(height: 10.0),
-                          Text("Quantity : 5 of ${list[index]['quantity']}"),
+                          Text("Quantity : ${list[index]['quantity']}"),
                           SizedBox(height: 10.0),
                           Text("Details: ${list[index]['description']}"),
 

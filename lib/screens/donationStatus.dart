@@ -31,6 +31,7 @@ class _DonationsState extends State<Donations> {
     var response = http.post(
         "http://$myip/phpPractice/mobile/deleteDonationApi.php",
         body: {"donationID": donationID});
+    setState(() {});
   }
 
   @override
@@ -43,7 +44,7 @@ class _DonationsState extends State<Donations> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Donation Status"),
+          title: Text("Donor Donation Status"),
           backgroundColor: kprimaryColor,
           automaticallyImplyLeading: false,
         ),

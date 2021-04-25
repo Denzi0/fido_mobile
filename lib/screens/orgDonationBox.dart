@@ -16,7 +16,7 @@ class DonationBoxOrg extends StatefulWidget {
 class _DonationBoxOrgState extends State<DonationBoxOrg> {
   String orgUsername = "";
   String donorUsername = "";
-  List donordetailsList;
+  List donordetailsList = [];
   List donorList = [];
   Future getOrgDonationBox() async {
     var url = "http://$myip/phpPractice/mobile/orgdonationBoxApi.php";
@@ -24,18 +24,17 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
     return json.decode(response.body);
   }
 
-  void donorDetails(donorName) async {
+  Future donorDetails(donorName) async {
     var url = "http://$myip/phpPractice/mobile/trackingDonorDetailsApi.php";
     var response = await http.post(url, body: {'donorName': donorName});
     var data = json.decode(response.body);
-    setState(() {
-      donordetailsList = data;
-    });
-    print(donordetailsList);
+
+    donordetailsList = data;
+    // print(donordetailsList);
     setState(() {});
   }
 
-  void donationRecieved(donationID, donationBoxID, trackingNumber, requestID,
+  Future donationRecieved(donationID, donationBoxID, trackingNumber, requestID,
       donationQuantity) async {
     var url =
         'http://$myip/phpPractice/mobile/trackingOrgDeliverDonationApi.php';
@@ -64,6 +63,7 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
     var url = 'http://$myip/phpPractice/mobile/trackingApprovedApi.php';
     var response =
         await http.post(url, body: {'donation_boxID': donationBoxID});
+    setState(() {});
   }
 
   Future getUsername() async {
@@ -128,12 +128,16 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
                                       style: TextStyle(color: Colors.green),
                                     ),
                                     Text(
+                                      "Date: ${list[index]['date_given']}",
+                                    ),
+                                    Text(
                                       "Donation Status : ${list[index]['statusDescription']}",
                                       style: TextStyle(color: Colors.green),
                                     ),
                                     SizedBox(height: 10),
                                     Row(children: [
-                                      list[index]['donationStatus'] == "5"
+                                      list[index]['statusDescription'] ==
+                                              "Donation delivered"
                                           ? ButtonTheme(
                                               height: 40.0,
                                               child: RaisedButton(
@@ -156,19 +160,22 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
                                                           color:
                                                               Colors.white))),
                                             )
-                                          : ButtonTheme(
-                                              height: 40.0,
-                                              child: RaisedButton(
-                                                  onPressed: () {
-                                                    approvedDonation(list[index]
-                                                        ['donation_boxID']);
-                                                  },
-                                                  color: kprimaryColor,
-                                                  child: Text("Approved",
-                                                      style: TextStyle(
-                                                          color:
-                                                              Colors.white))),
-                                            ),
+                                          : list[index]['donationStatus'] != '5'
+                                              ? ButtonTheme(
+                                                  height: 40.0,
+                                                  child: RaisedButton(
+                                                      onPressed: () {
+                                                        approvedDonation(list[
+                                                                index]
+                                                            ['donation_boxID']);
+                                                      },
+                                                      color: kprimaryColor,
+                                                      child: Text("Approved",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .white))),
+                                                )
+                                              : Container(),
                                       SizedBox(width: 10.0),
                                     ])
                                   ]),
@@ -196,9 +203,10 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
                                               FontAwesomeIcons.mapMarkerAlt),
                                           tooltip: 'Organization details',
                                           onPressed: () {
+                                            setState(() {});
+
                                             donorDetails(
                                                 list[index]['donorName']);
-
                                             showModalBottomSheet<void>(
                                               context: context,
                                               builder: (BuildContext context) {

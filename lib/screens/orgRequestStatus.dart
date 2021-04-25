@@ -30,6 +30,7 @@ class _RequestState extends State<Request> {
     var response = http.post(
         "http://$myip/phpPractice/mobile/deleteRequestApi.php",
         body: {"requestID": requestID});
+    setState(() {});
   }
 
   @override

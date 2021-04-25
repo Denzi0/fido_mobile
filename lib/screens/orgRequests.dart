@@ -44,17 +44,12 @@ class _OrgRequests extends State<OrgRequests> {
 
   var _currencies = ["Food", "Item", "Clothes", "Both Food and Item", "Others"];
   var _currenciesImportance = [
-    "For people in needs",
-    "House Fire victims",
-    "Earthquake victims",
-    "Flood and flashflood victims",
-    "Typhoon victims",
+    "Low",
+    "Medium",
+    "High",
   ];
 
-  var _currenciesUrgency = [
-    "Not Urgent",
-    "Urgent",
-  ];
+  var _currenciesUrgency = ["Normal", "Urgent", "Critical"];
   // current date time
   static final DateTime now = DateTime.now();
   static final DateFormat formatter = DateFormat('yyyy-MM-dd');
@@ -112,7 +107,7 @@ class _OrgRequests extends State<OrgRequests> {
 
   Future orgRequests() async {
     if (_formKey.currentState.validate()) {
-      print(_currenciesImportance.indexOf(_currentSelectedValueImportance));
+      // print(_currenciesImportance.indexOf(_currentSelectedValueImportance));
       // var url = "http://192.168.254.106/phpPractice/mobile/orgrequestapi.php";
       var response = await http.post(ADD_CATEGORY_URL, body: {
         'images': imageData != null ? imageData : "",
@@ -133,6 +128,8 @@ class _OrgRequests extends State<OrgRequests> {
 
         'daterequest': currentdate
       });
+      print(
+          'value : ${_currenciesUrgency.indexOf(_currentSelectedValueUrgency) + _currenciesImportance.indexOf(_currentSelectedValueImportance)}');
 
       // if (response.statusCode == 200) {
       //   print(response.body);
@@ -280,7 +277,7 @@ class _OrgRequests extends State<OrgRequests> {
                     //     controllerName: itemquantity,
                     //     keyType: TextInputType.number),
                     _buildOrgRequestFormField(
-                        label: "Description",
+                        label: "Purpose",
                         controllerName: description,
                         hint: "Input Donation Request Details...",
                         keyType: TextInputType.number,
@@ -289,7 +286,7 @@ class _OrgRequests extends State<OrgRequests> {
                     ///Priotization
                     ///Priotization
                     SizedBox(height: 20.0),
-                    Text("Purpose:"),
+                    Text("Number of people:"),
                     SizedBox(height: 10.0),
 
                     ///Priotization
@@ -303,7 +300,7 @@ class _OrgRequests extends State<OrgRequests> {
                           isEmpty: _currentSelectedValueImportance == '',
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
-                              hint: Text("Purpose"),
+                              // hint: Text("Number of People"),
                               value: _currentSelectedValueImportance,
                               isDense: true,
                               onChanged: (String newValue) {

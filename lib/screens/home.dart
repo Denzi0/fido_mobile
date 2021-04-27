@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:fido_project/screens/donationHome.dart';
 import 'package:fido_project/screens/matchDonation.dart';
-import 'globals.dart' as globals;
+import 'package:fido_project/screens/globals.dart' as globals;
 
 import 'dart:async';
 import 'dart:typed_data';
@@ -167,23 +167,20 @@ class _HomeState extends State<Home> {
   }
 
   _listItem(list, index) {
-    return list[index]['statusDescription'] == "Approved"
+    return list[index]['statusDescription'] == "Approved" &&
+            int.parse(list[index]['quantity']) > 0
         ? Container(
             margin: EdgeInsets.all(20.0),
             child: Card(
               child: Padding(
                 padding: EdgeInsets.all(10.0),
                 child: Column(children: [
-                  // showImage(list[index]['images']),
                   showImageB(list[index]['images']),
                   ListTile(
-                    // isThreeLine: true,
-                    // showImage(list[index]['images']),
                     subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(height: 10.0),
-                          // Text("${list[index]['EmpID'] == null ? '' : ''} "),
                           Text(
                               "${list[index]['orgName'] == null ? 'Admin' : list[index]['orgName']}",
                               style: TextStyle(fontWeight: FontWeight.bold)),
@@ -246,39 +243,3 @@ class _HomeState extends State<Home> {
         : Text('');
   }
 }
-
-//  ListView.builder(
-//             itemCount: categoryList.length,
-//             itemBuilder: (context, index) {
-//               return ListTile(
-//                 title: Text(categoryList[index]['orgID']),
-//                 subtitle: Text(categoryList[index]['name']),
-//                 trailing: showImage(categoryList[index]['images']),
-//               );
-//             })
-// class DataSearch extends SearchDelegate<String> {
-//   final recent = ["hellow", "ahie"];
-//   @override
-//   List<Widget> buildActions(BuildContext context) {
-//     return [IconButton(icon: Icon(Icons.clear), onPressed: () {})];
-//   }
-
-//   @override
-//   Widget buildLeading(BuildContext context) {
-//     return IconButton(
-//         icon: AnimatedIcon(
-//             icon: AnimatedIcons.menu_arrow, progress: transitionAnimation),
-//         onPressed: () {});
-//   }
-
-//   @override
-//   Widget buildResults(BuildContext context) {
-//     // TODO: implement buildResults
-//     throw UnimplementedError();
-//   }
-
-//   @override
-//   Widget buildSuggestions(BuildContext context) {
-//     final suggetionList = query.isEmpty ? recent : "";
-//   }
-// }

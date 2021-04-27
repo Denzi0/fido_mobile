@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fido_project/screens/donorLogin.dart';
 import 'package:fido_project/screens/donorAccount.dart';
 import 'package:flutter/cupertino.dart';
+import 'globals.dart' as globals;
 
 class OrgProfile extends StatefulWidget {
   @override
@@ -25,6 +26,7 @@ class _OrgProfileState extends State<OrgProfile> {
   Future logout(BuildContext context) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.remove('orgname');
+    globals.orgNameNoti = '';
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => OrgLogin()));
   }

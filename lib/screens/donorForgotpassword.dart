@@ -39,7 +39,6 @@ class _DonorForgotPassState extends State<DonorForgotPass> {
         verifyLink = link;
         verifyButton = true;
       });
-      sendMail();
       // Fluttertoast.showToast(
       //     msg: "Click Reset Password",
       //     toastLength: Toast.LENGTH_LONG,
@@ -61,6 +60,8 @@ class _DonorForgotPassState extends State<DonorForgotPass> {
       newPass = link;
       verifyButton = false;
     });
+    sendMail();
+
     print(link);
     // Fluttertoast.showToast(
     //     msg: "Reset Password",
@@ -79,9 +80,9 @@ class _DonorForgotPassState extends State<DonorForgotPass> {
   }
 
   sendMail() async {
-    String username = email.text;
-    // String password = "";
-    final smtpServer = gmail(username, password.text);
+    String username = "denzellanzaderas@gmail.com";
+    String password = "denziolanzx44";
+    final smtpServer = gmail(username, password);
     // Use the SmtpServer class to configure an SMTP server:
     // final smtpServer = SmtpServer('smtp.domain.com');
     // See the named arguments of SmtpServer forganization further configuration
@@ -138,16 +139,18 @@ class _DonorForgotPassState extends State<DonorForgotPass> {
                           e.isEmpty ? "Please Enter Your Email" : null,
                       controller: email,
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(), labelText: "Gmail")),
-                  SizedBox(height: 10),
-                  TextFormField(
-                      validator: (e) =>
-                          e.isEmpty ? "Please Enter Email Password" : null,
-                      controller: password,
-                      obscureText: true,
-                      decoration: InputDecoration(
+                          hintText: "Please Enter your Email",
                           border: OutlineInputBorder(),
-                          labelText: "Email Password")),
+                          labelText: "Email")),
+                  SizedBox(height: 10),
+                  // TextFormField(
+                  //     validator: (e) =>
+                  //         e.isEmpty ? "Please Enter Email Password" : null,
+                  //     controller: password,
+                  //     obscureText: true,
+                  //     decoration: InputDecoration(
+                  //         border: OutlineInputBorder(),
+                  //         labelText: "Email Password")),
                   Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                     Container(
                       margin: EdgeInsets.only(right: 10.0),

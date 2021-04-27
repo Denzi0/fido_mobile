@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fido_project/alertDialog.dart';
-import 'globals.dart' as globals;
 
 class DonationBox extends StatefulWidget {
   String buttonName;
@@ -42,15 +41,13 @@ class _DonationBoxState extends State<DonationBox> {
   }
 
   void organizationDetails(orgName) async {
-    setState(() {});
-
     var url = "http://$myip/phpPractice/mobile/trackingOrgDetailsApi.php";
     var response = await http.post(url, body: {'orgusername': orgName});
     var data = json.decode(response.body);
     setState(() {
       orgdetailsList = data;
     });
-    // print(orgdetailsList);
+    return;
   }
 
   Future getUsername() async {
@@ -91,6 +88,7 @@ class _DonationBoxState extends State<DonationBox> {
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, index) {
                             List list = snapshot.data;
+                            organizationDetails(list[index]['orgName']);
                             return Container(
                               margin: EdgeInsets.all(5.0),
                               child: Card(
@@ -127,10 +125,10 @@ class _DonationBoxState extends State<DonationBox> {
                                           SizedBox(height: 10),
                                           Text(
                                               "Donation Quantity : ${list[index]['donation_quantity']}"),
-                                          SizedBox(height: 10),
-                                          Text(
-                                            "Donor : ${list[index]['donationStatus']}",
-                                          ),
+                                          // SizedBox(height: 10),
+                                          // Text(
+                                          //   "Donor : ${list[index]['donationStatus']}",
+                                          // ),
                                           SizedBox(height: 10),
 
                                           Text(
@@ -142,6 +140,7 @@ class _DonationBoxState extends State<DonationBox> {
                                             "Feedback : ${list[index]['orgFeedback']}",
                                           ),
                                           SizedBox(height: 10),
+
                                           Text(
                                             "Donation Status : ${list[index]['statusDescription']}",
                                             style:
@@ -211,8 +210,6 @@ class _DonationBoxState extends State<DonationBox> {
                                       icon: Icon(FontAwesomeIcons.mapMarkerAlt),
                                       tooltip: 'Organization details',
                                       onPressed: () {
-                                        organizationDetails(
-                                            list[index]['orgName']);
                                         showModalBottomSheet<void>(
                                           context: context,
                                           builder: (BuildContext context) {

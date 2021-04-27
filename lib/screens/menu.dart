@@ -5,7 +5,6 @@ import 'package:fido_project/screens/donorProfile.dart';
 import 'package:fido_project/screens/donationStatus.dart';
 import 'package:fido_project/screens/donationBox.dart';
 import 'package:http/http.dart' as http;
-import 'globals.dart' as globals;
 
 import 'package:flutter/material.dart';
 import 'package:fido_project/screens/home.dart';
@@ -37,7 +36,8 @@ void start() async {
   await Workmanager.initialize(callbackDispatcher, isInDebugMode: true);
   await Workmanager.registerPeriodicTask("5", donorNoti,
       existingWorkPolicy: ExistingWorkPolicy.replace,
-      frequency: Duration(minutes: 15), //when should it check the link
+      //gibayloadn nimo ang frequencty 15 to 1 minute
+      frequency: Duration(minutes: 1), //when should it check the link
       initialDelay:
           Duration(seconds: 5), //duration before showing the notification
       constraints: Constraints(
@@ -56,10 +56,7 @@ void callbackDispatcher() {
     var response =
         await http.post('http://$myip/phpPractice/mobile/sample.php');
     var convert = json.decode(response.body);
-    var convert2 = convert
-        .where((i) =>
-            i['donorName'].toLowerCase() == globals.donornameNoti.toLowerCase())
-        .toList();
+    var convert2 = convert.where((i) => i['donorName'] == "John Doe").toList();
     print("Array $convert2");
     if (true) {
       // showNotification(0, "Donation Status", "Your donation from", flp);

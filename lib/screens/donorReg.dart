@@ -124,13 +124,23 @@ class _RegisterState extends State<Register> {
         validator: (e) => e.isEmpty ? "Please input a age" : null);
   }
 
+  String validateContact(String value) {
+    Pattern pattern = r"^(09|\+639)\d{9}$";
+
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value) || value == null)
+      return 'Enter a valid phone number';
+    else
+      return null;
+  }
+
   Widget _buildcontactField() {
     return TextFormField(
       controller: _contact,
       maxLength: 11,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(labelText: "Contact"),
-      validator: (e) => e.isEmpty ? "Please input contact" : null,
+      validator: validateContact,
     );
   }
 

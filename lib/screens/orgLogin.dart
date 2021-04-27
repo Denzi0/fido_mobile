@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:fido_project/constants/constantsVariable.dart';
 
 import 'package:fido_project/screens/donorLogin.dart';
+import 'globals.dart' as globals;
+
 import 'package:fido_project/screens/orgmenu.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -38,6 +40,7 @@ class _OrgLoginState extends State<OrgLogin> {
         // SharedPreferences logout and keep login in
         SharedPreferences preferences = await SharedPreferences.getInstance();
         orgname = preferences.setString('orgname', _orgname.text);
+
         // Up to here
         Fluttertoast.showToast(
             msg: "Successfully Login",
@@ -47,6 +50,7 @@ class _OrgLoginState extends State<OrgLogin> {
             backgroundColor: Colors.blue,
             textColor: Colors.white,
             fontSize: 16.0);
+        globals.orgNameNoti = preferences.getString('orgname');
 
         Navigator.push(
             context,
@@ -128,12 +132,11 @@ class _OrgLoginState extends State<OrgLogin> {
                           color: kprimaryColor,
                           textColor: Colors.white,
                           child: Text(
-                            'Login',
+                            'Login as Organization',
                             style: TextStyle(fontSize: 16),
                           ),
                           onPressed: () {
                             orglogin();
-                            print('login');
                           },
                         ),
                       ),
@@ -194,7 +197,7 @@ class _OrgLoginState extends State<OrgLogin> {
                           color: kprimaryColor,
                           textColor: Colors.white,
                           child: Text(
-                            'Login in as Donor',
+                            'Login as Donor',
                             style: TextStyle(fontSize: 16),
                           ),
                           onPressed: () {
@@ -202,7 +205,6 @@ class _OrgLoginState extends State<OrgLogin> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => Login()));
-                            print('login with org');
                           },
                         ),
                       ),

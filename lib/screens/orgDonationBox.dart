@@ -21,6 +21,7 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
   Future getOrgDonationBox() async {
     var url = "http://$myip/phpPractice/mobile/orgdonationBoxApi.php";
     var response = await http.post(url, body: {'orgUsername': orgUsername});
+
     return json.decode(response.body);
   }
 
@@ -29,9 +30,9 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
     var response = await http.post(url, body: {'donorName': donorName});
     var data = json.decode(response.body);
 
-    donordetailsList = data;
-    // print(donordetailsList);
-    setState(() {});
+    setState(() {
+      donordetailsList = data;
+    });
   }
 
   Future donationRecieved(donationID, donationBoxID, trackingNumber, requestID,
@@ -98,6 +99,8 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
                       List list = snapshot.data;
+
+                      donorDetails(list[index]['donorName']);
                       return Container(
                         margin: EdgeInsets.all(5.0),
                         child: Card(
@@ -203,10 +206,6 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
                                               FontAwesomeIcons.mapMarkerAlt),
                                           tooltip: 'Organization details',
                                           onPressed: () {
-                                            setState(() {});
-
-                                            donorDetails(
-                                                list[index]['donorName']);
                                             showModalBottomSheet<void>(
                                               context: context,
                                               builder: (BuildContext context) {

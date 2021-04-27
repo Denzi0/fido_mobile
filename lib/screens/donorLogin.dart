@@ -34,7 +34,6 @@ class _LoginState extends State<Login> {
       var response = await http.post(Uri.parse(url),
           body: {'username': _username.text, 'password': _password.text});
       var data = json.decode(response.body);
-      print(response.statusCode);
       if (data == "Success") {
         // SharedPreferences logout and keep login in
         SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -81,6 +80,10 @@ class _LoginState extends State<Login> {
     );
   }
 
+  // void initState() {
+  //   super.initState();
+  //   print(donorUname);
+  // }
   //this is text widget
 
   @override
@@ -151,7 +154,7 @@ class _LoginState extends State<Login> {
                         color: kprimaryColor,
                         textColor: Colors.white,
                         child: Text(
-                          'Login',
+                          'Login as Donor',
                           style: TextStyle(fontSize: 16),
                         ),
                         onPressed: () {
@@ -222,7 +225,6 @@ class _LoginState extends State<Login> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => OrgLogin()));
-                          print('login with org');
                         },
                       ),
                     ),

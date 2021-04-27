@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:fido_project/constants/constantsVariable.dart';
@@ -29,7 +30,7 @@ class _RegisterOrgState extends State<RegisterOrg> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final ageReg = RegExp(r'^[0-9]*$');
-
+  File _file;
   // generate random password
   String generateRandomString(int len) {
     var r = Random();
@@ -39,6 +40,7 @@ class _RegisterOrgState extends State<RegisterOrg> {
         .join();
   }
 
+  void _uploadFile(_file) {}
   // String orgrandompassword = generateRandomString(5);
   //
   Future registerOrg() async {
@@ -112,78 +114,6 @@ class _RegisterOrgState extends State<RegisterOrg> {
     }
   }
 
-  Widget _buildorganizationnameField() {
-    return TextFormField(
-      controller: _organizationname,
-      decoration: InputDecoration(labelText: "Organization Name"),
-      validator: (e) => e.isEmpty ? "Please input value" : null,
-    );
-  }
-
-  Widget _buildpersonInChargeField() {
-    return TextFormField(
-      controller: _personInCharge,
-      decoration: InputDecoration(labelText: "Person in Charge"),
-      validator: (e) => e.isEmpty ? "Please input value" : null,
-    );
-  }
-
-  Widget _buildcontactField() {
-    return TextFormField(
-      // keyboardType: TextInputType.emailAddress,
-      controller: _contact,
-      decoration: InputDecoration(labelText: "Contact"),
-      validator: (e) => e.isEmpty ? "Please input value" : null,
-    );
-  }
-
-  Widget _buildaddressField() {
-    return TextFormField(
-        controller: _address,
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(labelText: "Address"),
-        validator: (e) => e.isEmpty ? "Please input a value" : null);
-  }
-
-  Widget _buildwebsiteField() {
-    return TextFormField(
-      controller: _website,
-      // obscureText: true,
-      decoration: InputDecoration(labelText: "Website"),
-      validator: (e) => e.isEmpty ? "Please input value" : null,
-    );
-  }
-
-  String validateEmail(String value) {
-    Pattern pattern =
-        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-        r"{0,253}[a-zA-Z0-9])?)*$";
-    RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value) || value == null)
-      return 'Enter a valid email address';
-    else
-      return null;
-  }
-
-  Widget _buildemailField() {
-    return TextFormField(
-      controller: _email,
-      // obscureText: true,
-      decoration: InputDecoration(labelText: "Email"),
-      validator: validateEmail,
-    );
-  }
-
-  Widget _buildtinNoField() {
-    return TextFormField(
-      controller: _tinNo,
-      // obscureText: true,
-      decoration: InputDecoration(labelText: "Tin Number"),
-      validator: (e) => e.isEmpty ? "Please input value" : null,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -209,8 +139,16 @@ class _RegisterOrgState extends State<RegisterOrg> {
                     _buildwebsiteField(),
                     _buildtinNoField(),
                     _buildemailField(),
-                    SizedBox(height: 20.0),
-
+                    RaisedButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        color: kprimaryColor,
+                        textColor: Colors.white,
+                        child: Text("Upload File"),
+                        onPressed: () {
+                          _uploadFile(_file);
+                        }),
                     //sample
                     SizedBox(
                       height: 15,
@@ -256,6 +194,105 @@ class _RegisterOrgState extends State<RegisterOrg> {
           ),
         ),
       ),
+    );
+  }
+
+  /////////widgets inputs
+
+  Widget _buildorganizationnameField() {
+    return TextFormField(
+      controller: _organizationname,
+      decoration: InputDecoration(labelText: "Organization Name"),
+      validator: (e) => e.isEmpty ? "Please input value" : null,
+    );
+  }
+
+  Widget _buildpersonInChargeField() {
+    return TextFormField(
+      controller: _personInCharge,
+      decoration: InputDecoration(labelText: "Person in Charge"),
+      validator: (e) => e.isEmpty ? "Please input value" : null,
+    );
+  }
+
+  String validateContact(String value) {
+    Pattern pattern = r"^(09|\+639)\d{9}$";
+
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value) || value == null)
+      return 'Enter a valid phone number';
+    else
+      return null;
+  }
+
+  Widget _buildcontactField() {
+    return TextFormField(
+        maxLength: 11,
+
+        // keyboardType: TextInputType.emailAddress,
+        controller: _contact,
+        decoration: InputDecoration(labelText: "Contact"),
+        validator: validateContact);
+  }
+
+  Widget _buildaddressField() {
+    return TextFormField(
+        controller: _address,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(labelText: "Address"),
+        validator: (e) => e.isEmpty ? "Please input a value" : null);
+  }
+
+  Widget _buildwebsiteField() {
+    return TextFormField(
+      controller: _website,
+      // obscureText: true,
+      decoration: InputDecoration(labelText: "Website"),
+      validator: (e) => e.isEmpty ? "Please input value" : null,
+    );
+  }
+
+  String validateEmail(String value) {
+    Pattern pattern =
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?)*$";
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value) || value == null)
+      return 'Enter a valid email address';
+    else
+      return null;
+  }
+
+  String validateEmailOrg(String value) {
+    Pattern pattern =
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?)*$";
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value) || value == null)
+      return 'Enter a valid email address';
+    else
+      return null;
+  }
+
+  Widget _buildemailField() {
+    return TextFormField(
+      controller: _email,
+      // obscureText: true,
+      decoration: InputDecoration(labelText: "Email"),
+      validator: validateEmailOrg,
+    );
+  }
+
+  Widget _buildtinNoField() {
+    return TextFormField(
+      maxLength: 9,
+
+      controller: _tinNo,
+      // obscureText: true,
+      decoration: InputDecoration(labelText: "Tin Number"),
+      validator: (e) => e.isEmpty ? "Please input value" : null,
     );
   }
 }

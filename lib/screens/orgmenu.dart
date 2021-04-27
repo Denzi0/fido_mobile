@@ -4,17 +4,18 @@ import 'package:fido_project/screens/orgDonationBox.dart';
 import 'package:fido_project/screens/orgProfile.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'globals.dart' as globals;
+import 'package:fido_project/screens/globals.dart' as globals;
 
 import 'package:fido_project/constants/constantsVariable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ff_navigation_bar/ff_navigation_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
 const orgNoti = "orgNoti";
-var orgUname = '';
+var orgName;
 void showNotification(id, v, y, flp) async {
   var android = AndroidNotificationDetails(
       'ChannelID', 'channel NAME', 'CHANNEL DESCRIPTION',
@@ -24,22 +25,22 @@ void showNotification(id, v, y, flp) async {
   await flp.show(id, '$y', '$v', platform, payload: 'VIS \n $v');
 }
 
-void globalVariable(orgUsername) {
-  orgUname = orgUsername;
-  return;
-}
-
 void start() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Workmanager.initialize(callbackDispatcher, isInDebugMode: true);
   await Workmanager.registerPeriodicTask("5", orgNoti,
       existingWorkPolicy: ExistingWorkPolicy.replace,
-      frequency: Duration(minutes: 15), //when should it check the link
+      frequency: Duration(minutes: 1), //when should it check the link
       initialDelay:
           Duration(seconds: 5), //duration before showing the notification
       constraints: Constraints(
         networkType: NetworkType.connected,
       ));
+}
+
+void getUsername(orgname) async {
+  orgName = orgname;
+  return;
 }
 
 void callbackDispatcher() {
@@ -53,7 +54,8 @@ void callbackDispatcher() {
     var response =
         await http.post('http://$myip/phpPractice/mobile/sample.php');
     var org = json.decode(response.body);
-    var orgconvert = org.where((i) => i['orgName'] == 'House of Hope').toList();
+
+    var orgconvert = org.where((i) => i['orgName'] == "House of Hope").toList();
     print("Array $orgconvert");
     if (true) {
       for (var i = 0; i <= orgconvert.length - 1; i++) {
@@ -83,9 +85,8 @@ class _WelcomeOrgState extends State<WelcomeOrg> {
   @override
   void initState() {
     super.initState();
-
-    print(orgNoti);
-    // globalVariable(orgUsername);
+    getUsername(globals.orgNameNoti);
+    print(globals.orgNameNoti);
     start();
   }
   //data from orglogin

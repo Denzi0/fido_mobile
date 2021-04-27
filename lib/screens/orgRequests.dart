@@ -10,7 +10,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:fido_project/screens/home.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'globals.dart' as globals;
 
 class OrgRequests extends StatefulWidget {
   @override
@@ -44,12 +43,12 @@ class _OrgRequests extends State<OrgRequests> {
 
   var _currencies = ["Food", "Item", "Clothes", "Both Food and Item", "Others"];
   var _currenciesImportance = [
-    "Low",
-    "Medium",
-    "High",
+    "Low [ 1 to 50 people ]",
+    "Medium [ 100 to 300 people ]",
+    "High [ more than 300 ]",
   ];
 
-  var _currenciesUrgency = ["Normal", "Urgent", "Critical"];
+  var _currenciesUrgency = ["Not Urgent", "Urgent", "Very Urgent"];
   // current date time
   static final DateTime now = DateTime.now();
   static final DateFormat formatter = DateFormat('yyyy-MM-dd');
@@ -286,7 +285,7 @@ class _OrgRequests extends State<OrgRequests> {
                     ///Priotization
                     ///Priotization
                     SizedBox(height: 20.0),
-                    Text("Number of people:"),
+                    Text("Number of people needed or affected:"),
                     SizedBox(height: 10.0),
 
                     ///Priotization

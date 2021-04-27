@@ -1,5 +1,6 @@
 import 'package:fido_project/constants/constantsVariable.dart';
 import "package:flutter/material.dart";
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -10,19 +11,42 @@ class OrgAccount extends StatefulWidget {
 }
 
 class _OrgAccountState extends State<OrgAccount> {
-  String _username = "";
+  String _orgUname = "";
+
+  TextEditingController currentPass = new TextEditingController();
+  TextEditingController changePass = new TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   Future getUsername() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
-      _username = preferences.getString('orgname');
+      _orgUname = preferences.getString('orgname');
     });
   }
 
-  // void changePassword() async {
-  //   var url = "http://$myip/phpPractice/mobile/updateOrgAccountApi.php";
-  //   var response = await http.post(url,
-  //       body: {"orgusername": _username, "orgpassword": orgpassword});
-  // }
+  void changePassword() async {
+    if (_formKey.currentState.validate()) {
+      print("hellow");
+      var url = "http://$myip/phpPractice/mobile/orgChangePassApi.php";
+      var response = await http.post(url, body: {
+        "orgusername": _orgUname,
+        "orgOldpassword": currentPass.text,
+        "orgNewpassword": changePass.text,
+      });
+
+      var data = json.decode(response.body);
+      if (data == "Success") {
+        Fluttertoast.showToast(
+            msg: "Password Change",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.blue,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -37,30 +61,44 @@ class _OrgAccountState extends State<OrgAccount> {
         body: Container(
             child: Container(
           padding: EdgeInsets.all(24.0),
-          child: Column(children: [
-            TextFieldReusable(name: "Current Password"),
-            TextFieldReusable(name: "Change Password"),
-            RaisedButton(
-                color: kprimaryColor,
-                onPressed: () {
-                  // changePassword();
-                },
-                child: Text("Change Password",
-                    style: TextStyle(color: Colors.white)))
-          ]),
+          child: Form(
+            key: _formKey,
+            child: Column(children: [
+              // TextFieldReusable(controllerName: orgnameController),
+              // TextFieldReusable(
+              //     name: "Current Password", controllerName: currentPass),
+              TextFieldReusable(
+                  name: "Change Password", controllerName: changePass),
+              RaisedButton(
+                  color: kprimaryColor,
+                  onPressed: () {
+                    changePassword();
+                  },
+                  child: Text("Change Password",
+                      style: TextStyle(color: Colors.white)))
+            ]),
+          ),
         )));
   }
 }
 
 class TextFieldReusable extends StatelessWidget {
   final String name;
-  final String myValue;
-  TextFieldReusable({this.name, this.myValue});
+  final TextEditingController controllerName;
+  TextFieldReusable({this.name, this.controllerName});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-        initialValue: myValue,
+        validator: (e) {
+          if (e.isEmpty) {
+            return "Please input Field";
+          } else {
+            return null;
+          }
+        },
+        obscureText: true,
+        controller: controllerName,
         decoration: InputDecoration(
           labelText: name,
         ));

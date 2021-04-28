@@ -1,3 +1,4 @@
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:fido_project/constants/constantsVariable.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -44,12 +45,31 @@ class _MatchDonationState extends State<MatchDonation> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   // TextEditingController donationtitle = TextEditingController();
+  GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
 
   TextEditingController donationname = TextEditingController();
   TextEditingController donationquantity = TextEditingController();
   TextEditingController description = TextEditingController();
-  var _currentSelectedValue;
-
+  var _currentSelectedValue = "Others";
+  List suggestionList = [
+    "Noodles",
+    "Bottled Water",
+    "Pencil",
+    "Rice",
+    "Canned Sardines",
+    "Canned Tuna",
+    "Canned Soup",
+    "Blanket",
+    "Book-educational",
+    "Book-magazines",
+    "Book-novel",
+    "Pillow",
+    "Shirt",
+    "Jeans",
+    "Pants",
+    "Tissue",
+  ];
+  //
   void food() async {
     var now = new DateTime.now();
     var formatter = new DateFormat('yyyy-MM-dd');
@@ -103,6 +123,14 @@ class _MatchDonationState extends State<MatchDonation> {
     getdonorFood();
     setState(() {
       donationname.text = orgRequestName;
+      orgRequestName == "Noodles" ||
+              orgRequestName == "Canned Sardines" ||
+              orgRequestName == "Canned Tuna" ||
+              orgRequestName == "Canned Soup" ||
+              orgRequestName == "Bottled Water" ||
+              orgRequestName == "Rice"
+          ? _currentSelectedValue = "Food"
+          : _currentSelectedValue = "Item";
     });
     print(donorUsername);
     print(orgDescription);
@@ -111,7 +139,8 @@ class _MatchDonationState extends State<MatchDonation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Donation"), backgroundColor: kprimaryColor),
+      appBar:
+          AppBar(title: Text("Donor Donation"), backgroundColor: kprimaryColor),
       body: Center(
         child: Container(
           margin: EdgeInsets.all(24),
@@ -131,12 +160,49 @@ class _MatchDonationState extends State<MatchDonation> {
                       // SizedBox(height: 10.0),
                       // Text(requestID)
                     ]),
+                    AutoCompleteTextField(
+                        // validator: _validateEmail,
+                        controller: donationname,
+                        itemSubmitted: (item) {
+                          donationname.text = item;
+                          // setState(() {
+                          //   donationname.text == "Noodles" ||
+                          //           donationname.text == "Canned Sardines" ||
+                          //           donationname.text == "Canned Tuna" ||
+                          //           donationname.text == "Canned Soup" ||
+                          //           donationname.text == "Bottled Water" ||
+                          //           donationname.text == "Rice"
+                          //       ? _currentSelectedValue = "Food"
+                          //       : _currentSelectedValue = "Item";
+                          // });
+                        },
+                        // clearOnSubmit: false,
+                        key: key,
+                        decoration: InputDecoration(
+                          hintText: "e.g Canned Goods, Bottled Water etc..",
+                        ),
+                        clearOnSubmit: false,
+                        suggestions: suggestionList,
+                        itemBuilder: (context, item) {
+                          return Container(
+                              padding: EdgeInsets.all(20.0),
+                              child: Row(
+                                children: [Text(item)],
+                              ));
+                        },
+                        itemSorter: (a, b) {
+                          return a.compareTo(b);
+                        },
+                        itemFilter: (item, query) {
+                          return item
+                              .toLowerCase()
+                              .startsWith(query.toLowerCase());
+                        }),
+
                     // _buildFoodDonFormField(
-                    //     label: "Food Title", name: foodtitle),
-                    _buildFoodDonFormField(
-                      label: "Donation Name",
-                      name: donationname,
-                    ),
+                    //   label: "Donation Name",
+                    //   name: donationname,
+                    // ),
                     SizedBox(height: 20),
                     FormField<String>(
                       builder: (FormFieldState<String> state) {

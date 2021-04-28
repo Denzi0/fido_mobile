@@ -18,6 +18,12 @@ class OrgRequests extends StatefulWidget {
 
 class _OrgRequests extends State<OrgRequests> {
   //
+  TextEditingController checkedValue = TextEditingController();
+  TextEditingController name = TextEditingController();
+  TextEditingController quantity = TextEditingController();
+  TextEditingController description = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   List suggestionList = [
     "Noodles",
     "Bottled Water",
@@ -27,6 +33,9 @@ class _OrgRequests extends State<OrgRequests> {
     "Canned Tuna",
     "Canned Soup",
     "Blanket",
+    "Book-educational",
+    "Book-magazines",
+    "Book-novel",
     "Pillow",
     "Shirt",
     "Jeans",
@@ -37,7 +46,7 @@ class _OrgRequests extends State<OrgRequests> {
   File imageFile;
   String imageData;
   final picker = ImagePicker();
-  var _currentSelectedValue;
+  var _currentSelectedValue = "Others";
   var _currentSelectedValueImportance;
   var _currentSelectedValueUrgency;
 
@@ -67,17 +76,13 @@ class _OrgRequests extends State<OrgRequests> {
   void initState() {
     super.initState();
     getOrgname();
+    // _currentSelectedValueImportance = "Food";
   }
 
   GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
 
   ///////
   ///
-  TextEditingController checkedValue = TextEditingController();
-  var name = TextEditingController();
-  TextEditingController quantity = TextEditingController();
-  TextEditingController description = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   static const ADD_CATEGORY_URL =
       "http://$myip/phpPractice/mobile/orgrequestapi.php";
@@ -201,6 +206,16 @@ class _OrgRequests extends State<OrgRequests> {
                         controller: name,
                         itemSubmitted: (item) {
                           name.text = item;
+                          setState(() {
+                            name.text == "Noodles" ||
+                                    name.text == "Canned Sardines" ||
+                                    name.text == "Canned Tuna" ||
+                                    name.text == "Canned Soup" ||
+                                    name.text == "Bottled Water" ||
+                                    name.text == "Rice"
+                                ? _currentSelectedValue = "Food"
+                                : _currentSelectedValue = "Item";
+                          });
                         },
                         // clearOnSubmit: false,
                         key: key,
@@ -240,7 +255,7 @@ class _OrgRequests extends State<OrgRequests> {
                           isEmpty: _currentSelectedValue == '',
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
-                              hint: Text("Type"),
+                              // hint: Text("Type"),
                               value: _currentSelectedValue,
                               isDense: true,
                               onChanged: (String newValue) {

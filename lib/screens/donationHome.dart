@@ -51,7 +51,6 @@ class _DonationHomeState extends State<DonationHome> {
 
     ///
     if (_formKey.currentState.validate()) {
-      print('Hellowsdf df');
       var url = "http://$myip/phpPractice/mobile/donationHomeApi.php";
       var response = await http.post(url, body: {
         'orgID': requestID,
@@ -103,7 +102,8 @@ class _DonationHomeState extends State<DonationHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Donation"), backgroundColor: kprimaryColor),
+      appBar:
+          AppBar(title: Text("Donor Donation"), backgroundColor: kprimaryColor),
       body: Center(
         child: Container(
           margin: EdgeInsets.all(24),
@@ -123,6 +123,7 @@ class _DonationHomeState extends State<DonationHome> {
                       // SizedBox(height: 10.0),
                       // Text(requestID)
                     ]),
+
                     // _buildFoodDonFormField(
                     //     label: "Food Title", name: foodtitle),
                     _buildFoodDonFormField(

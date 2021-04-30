@@ -16,22 +16,25 @@ class _AccountState extends State<Account> {
 
   TextEditingController _currentPass = new TextEditingController();
   TextEditingController _changePass = new TextEditingController();
+  TextEditingController _donorUsername;
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Future getUsername() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
       _donorUname = preferences.getString('username');
+      _donorUsername = TextEditingController(text: _donorUname);
     });
   }
 
-  void changePassword() async {
+  void changeProfile() async {
     if (_formKey.currentState.validate()) {
       print("hellow donor");
 
       var url = "http://$myip/phpPractice/mobile/donorChangePassApi.php";
       var response = await http.post(url, body: {
-        "donorusername": _donorUname,
+        "donorusername": _donorUsername.text,
         "donorOldpassword": _currentPass.text,
         "donorNewpassword": _changePass.text,
       });
@@ -67,11 +70,17 @@ class _AccountState extends State<Account> {
               key: _formKey,
               child: Column(children: [
                 TextFieldReusable(
-                    name: "Change Password", controllerName: _changePass),
+                    name: "Username",
+                    controllerName: _donorUsername,
+                    isObscureText: false),
+                TextFieldReusable(
+                    name: "Change Password",
+                    controllerName: _changePass,
+                    isObscureText: true),
                 RaisedButton(
                     color: kprimaryColor,
                     onPressed: () {
-                      changePassword();
+                      changeProfile();
                     },
                     child: Text("Change Password",
                         style: TextStyle(color: Colors.white)))
@@ -83,9 +92,10 @@ class _AccountState extends State<Account> {
 }
 
 class TextFieldReusable extends StatelessWidget {
+  final bool isObscureText;
   final String name;
   final TextEditingController controllerName;
-  TextFieldReusable({this.name, this.controllerName});
+  TextFieldReusable({this.name, this.controllerName, this.isObscureText});
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +107,7 @@ class TextFieldReusable extends StatelessWidget {
             return null;
           }
         },
-        obscureText: true,
+        obscureText: isObscureText,
         controller: controllerName,
         decoration: InputDecoration(
           labelText: name,

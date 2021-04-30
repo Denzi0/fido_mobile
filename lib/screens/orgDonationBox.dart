@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -67,6 +69,33 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
     setState(() {});
   }
 
+  Widget showImageB(String image) {
+    String placeholder =
+        "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
+    if (image?.isEmpty ?? true)
+      return Container();
+    else {
+      switch (image.length % 4) {
+        case 1:
+          break;
+        case 2:
+          image = image + "==";
+          break;
+        case 3:
+          image = image + "=";
+          break;
+      }
+    }
+    Uint8List _bytesImage;
+    String _imgString = image;
+    _bytesImage = Base64Decoder().convert(_imgString);
+    return Image.memory(_bytesImage,
+        width: double.infinity,
+        height: 150,
+        gaplessPlayback: true,
+        fit: BoxFit.fill);
+  }
+
   Future getUsername() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
@@ -111,6 +140,8 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
                               title: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    showImageB(list[index]['donation_image']),
+                                    SizedBox(height: 10),
                                     Text(
                                         "Donation Box ID :${list[index]['donation_boxID']}"),
                                   ]),
@@ -125,6 +156,9 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
                                     SizedBox(height: 10),
                                     Text(
                                         "Donor Donation : ${list[index]['donationName']}"),
+                                    SizedBox(height: 10),
+                                    Text(
+                                        "Donation Description: ${list[index]['donation_description']}"),
                                     SizedBox(height: 10),
                                     Text(
                                       "Donor Status : ${list[index]['donationStatus']}",

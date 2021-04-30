@@ -2,10 +2,12 @@ import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:fido_project/constants/constantsVariable.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fido_project/screens/home.dart';
 import 'package:fido_project/screens/match.dart';
 import 'package:flutter/cupertino.dart';
+import 'dart:io';
 
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
@@ -69,7 +71,37 @@ class _MatchDonationState extends State<MatchDonation> {
     "Pants",
     "Tissue",
   ];
-  //
+
+  ///
+  File _imageFile;
+  String imageData;
+  final picker = ImagePicker();
+
+  //////////
+  choiceImage() async {
+    var pickedImage = await ImagePicker().getImage(
+        source: ImageSource.gallery,
+        maxHeight: 480,
+        maxWidth: 640,
+        imageQuality: 25);
+    if (pickedImage != null) {
+      setState(() {
+        _imageFile = File(pickedImage.path);
+      });
+      imageData = base64Encode(_imageFile.readAsBytesSync());
+
+      return imageData;
+    } else {
+      return null;
+    }
+  }
+
+  ////
+  showImage(String image) {
+    return Image.memory(base64Decode(image));
+  }
+
+  ////
   void food() async {
     var now = new DateTime.now();
     var formatter = new DateFormat('yyyy-MM-dd');
@@ -85,6 +117,7 @@ class _MatchDonationState extends State<MatchDonation> {
         'donationtype': (_currencies.indexOf(_currentSelectedValue)).toString(),
         'donationquantity': donationquantity.text,
         'description': description.text,
+        'donationImages': imageData != null ? imageData : "",
         'date': formattedDate,
       });
       var data = json.decode(response.body);
@@ -165,16 +198,6 @@ class _MatchDonationState extends State<MatchDonation> {
                         controller: donationname,
                         itemSubmitted: (item) {
                           donationname.text = item;
-                          // setState(() {
-                          //   donationname.text == "Noodles" ||
-                          //           donationname.text == "Canned Sardines" ||
-                          //           donationname.text == "Canned Tuna" ||
-                          //           donationname.text == "Canned Soup" ||
-                          //           donationname.text == "Bottled Water" ||
-                          //           donationname.text == "Rice"
-                          //       ? _currentSelectedValue = "Food"
-                          //       : _currentSelectedValue = "Item";
-                          // });
                         },
                         // clearOnSubmit: false,
                         key: key,
@@ -199,10 +222,6 @@ class _MatchDonationState extends State<MatchDonation> {
                               .startsWith(query.toLowerCase());
                         }),
 
-                    // _buildFoodDonFormField(
-                    //   label: "Donation Name",
-                    //   name: donationname,
-                    // ),
                     SizedBox(height: 20),
                     FormField<String>(
                       builder: (FormFieldState<String> state) {
@@ -249,6 +268,23 @@ class _MatchDonationState extends State<MatchDonation> {
                       name: description,
                       hintName: 'Details of your donation..',
                     ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    IconButton(
+                        icon: Icon(FontAwesomeIcons.image),
+                        onPressed: () {
+                          // uploadImage();
+                          choiceImage();
+                        }),
+
+                    imageData == null
+                        ? Text('No image Selected')
+                        : Container(
+                            height: 200.0,
+                            width: double.infinity,
+                            child: showImage(imageData),
+                          ),
                     SizedBox(
                       height: 20.0,
                     ),

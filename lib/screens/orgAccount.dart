@@ -12,6 +12,7 @@ class OrgAccount extends StatefulWidget {
 
 class _OrgAccountState extends State<OrgAccount> {
   String _orgUname = "";
+  TextEditingController orgUsername = new TextEditingController();
 
   TextEditingController currentPass = new TextEditingController();
   TextEditingController changePass = new TextEditingController();
@@ -21,6 +22,7 @@ class _OrgAccountState extends State<OrgAccount> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
       _orgUname = preferences.getString('orgname');
+      orgUsername.text = _orgUname;
     });
   }
 
@@ -29,7 +31,7 @@ class _OrgAccountState extends State<OrgAccount> {
       print("hellow");
       var url = "http://$myip/phpPractice/mobile/orgChangePassApi.php";
       var response = await http.post(url, body: {
-        "orgusername": _orgUname,
+        "orgusername": orgUsername.text,
         "orgOldpassword": currentPass.text,
         "orgNewpassword": changePass.text,
       });
@@ -68,7 +70,13 @@ class _OrgAccountState extends State<OrgAccount> {
               // TextFieldReusable(
               //     name: "Current Password", controllerName: currentPass),
               TextFieldReusable(
-                  name: "Change Password", controllerName: changePass),
+                  name: "Username",
+                  controllerName: orgUsername,
+                  isObscureText: false),
+              TextFieldReusable(
+                  name: "Change Password",
+                  controllerName: changePass,
+                  isObscureText: true),
               RaisedButton(
                   color: kprimaryColor,
                   onPressed: () {
@@ -84,8 +92,9 @@ class _OrgAccountState extends State<OrgAccount> {
 
 class TextFieldReusable extends StatelessWidget {
   final String name;
+  final bool isObscureText;
   final TextEditingController controllerName;
-  TextFieldReusable({this.name, this.controllerName});
+  TextFieldReusable({this.name, this.controllerName, this.isObscureText});
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +106,7 @@ class TextFieldReusable extends StatelessWidget {
             return null;
           }
         },
-        obscureText: true,
+        obscureText: isObscureText,
         controller: controllerName,
         decoration: InputDecoration(
           labelText: name,

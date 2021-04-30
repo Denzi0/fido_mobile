@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:fido_project/constants/constantsVariable.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -32,6 +34,33 @@ class _DonationsState extends State<Donations> {
         "http://$myip/phpPractice/mobile/deleteDonationApi.php",
         body: {"donationID": donationID});
     setState(() {});
+  }
+
+  Widget showImageB(String image) {
+    String placeholder =
+        "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
+    if (image?.isEmpty ?? true)
+      return Container();
+    else {
+      switch (image.length % 4) {
+        case 1:
+          break;
+        case 2:
+          image = image + "==";
+          break;
+        case 3:
+          image = image + "=";
+          break;
+      }
+    }
+    Uint8List _bytesImage;
+    String _imgString = image;
+    _bytesImage = Base64Decoder().convert(_imgString);
+    return Image.memory(_bytesImage,
+        width: double.infinity,
+        height: 200,
+        gaplessPlayback: true,
+        fit: BoxFit.fill);
   }
 
   @override
@@ -71,23 +100,26 @@ class _DonationsState extends State<Donations> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      showImageB(list[index]['donation_image']),
+                                      SizedBox(height: 10.0),
+
                                       // Text(
                                       //     "Donation ID : ${list[index]['donationID']}"),
                                       // SizedBox(height: 20.0),
                                       Text(
                                           "Donation name : ${list[index]['donationName']}"),
-                                      SizedBox(height: 20.0),
+                                      SizedBox(height: 10.0),
                                       Text(
                                           "Quantity : ${list[index]['donation_quantity']}"),
-                                      SizedBox(height: 20.0),
+                                      SizedBox(height: 10.0),
                                       Text(
                                           "Description : ${list[index]['donation_description']}"),
-                                      SizedBox(height: 20.0),
+                                      SizedBox(height: 10.0),
                                       Text("Date: ${list[index]['date']}"),
-                                      SizedBox(height: 20.0),
+                                      SizedBox(height: 10.0),
                                       Text(
                                           "Date Received : ${list[index]['date_received'] != null ? list[index]['date_received'] : 'Not recieve Yet'}"),
-                                      SizedBox(height: 20.0),
+                                      SizedBox(height: 10.0),
                                       Text(
                                           "Donation Status : "
                                           "${list[index]['statusID'] == '1' ? 'Pending' : ''}"

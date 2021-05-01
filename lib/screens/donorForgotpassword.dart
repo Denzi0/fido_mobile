@@ -80,8 +80,8 @@ class _DonorForgotPassState extends State<DonorForgotPass> {
   }
 
   sendMail() async {
-    String username = "denzellanzaderas@gmail.com";
-    String password = "denziolanzx44";
+    String username = "fidodonation@gmail.com";
+    String password = "fidofido";
     final smtpServer = gmail(username, password);
     // Use the SmtpServer class to configure an SMTP server:
     // final smtpServer = SmtpServer('smtp.domain.com');

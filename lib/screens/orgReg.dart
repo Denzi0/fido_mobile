@@ -112,8 +112,8 @@ class _RegisterOrgState extends State<RegisterOrg> {
       // } else {
       //
 
-      String username = 'denzellanzaderas@gmail.com';
-      String password = 'denziolanzx44';
+      String username = 'fidodonation@gmail.com';
+      String password = 'fidofido';
 
       final smtpServer = gmail(username, password);
       // Use the SmtpServer class to configure an SMTP server:

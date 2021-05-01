@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:fido_project/constants/constantsVariable.dart';
-import 'package:fido_project/screens/foodanditemDonation.dart';
+import 'package:fido_project/screens/FINDMATCH.dart';
 import 'package:fido_project/screens/donorProfile.dart';
 import 'package:fido_project/screens/donationStatus.dart';
 import 'package:fido_project/screens/donationBox.dart';
@@ -37,7 +37,7 @@ void start() async {
   await Workmanager.registerPeriodicTask("5", donorNoti,
       existingWorkPolicy: ExistingWorkPolicy.replace,
       //gibayloadn nimo ang frequencty 15 to 1 minute
-      frequency: Duration(minutes: 1), //when should it check the link
+      frequency: Duration(seconds: 5), //when should it check the link
       initialDelay:
           Duration(seconds: 5), //duration before showing the notification
       constraints: Constraints(
@@ -94,7 +94,7 @@ class _WelcomeState extends State<Welcome> {
     Home(),
     DonationBox(),
     // DonationCategory(),
-    FoodandItem(),
+    Findmatch(),
     Donations(),
     DonorProfile(),
   ];

@@ -61,11 +61,13 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
     setState(() {});
   }
 
-  void approvedDonation(donationBoxID) async {
+  void approvedDonation(donationBoxID, donationQuantity) async {
     print(donationBoxID);
     var url = 'http://$myip/phpPractice/mobile/trackingApprovedApi.php';
-    var response =
-        await http.post(url, body: {'donation_boxID': donationBoxID});
+    var response = await http.post(url, body: {
+      'donation_boxID': donationBoxID,
+      'donation_quantity': donationQuantity
+    });
     setState(() {});
   }
 
@@ -202,9 +204,11 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
                                                   height: 40.0,
                                                   child: RaisedButton(
                                                       onPressed: () {
-                                                        approvedDonation(list[
-                                                                index]
-                                                            ['donation_boxID']);
+                                                        approvedDonation(
+                                                            list[index][
+                                                                'donation_boxID'],
+                                                            list[index][
+                                                                'donation_quantity']);
                                                       },
                                                       color: kprimaryColor,
                                                       child: Text("Approved",

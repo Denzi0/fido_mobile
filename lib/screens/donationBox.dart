@@ -5,8 +5,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fido_project/alertDialog.dart';
+// import 'package:fido_project/alertDialog.dart';
 
+// ignore: must_be_immutable
 class DonationBox extends StatefulWidget {
   String buttonName;
   @override
@@ -151,7 +152,9 @@ class _DonationBoxState extends State<DonationBox> {
 
 ///////////////
                                           ///
-                                          list[index]['donationStatus'] == '5'
+                                          // list[index]['donationStatus'] == '5'
+                                          ///
+                                          list[index]['quantity'] == '0'
                                               ? Wrap(children: [
                                                   ButtonTheme(
                                                     height: 40.0,

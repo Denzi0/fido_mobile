@@ -1,23 +1,19 @@
 import 'package:fido_project/constants/constantsVariable.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fido_project/screens/home.dart';
-import 'package:fido_project/screens/match.dart';
+import 'package:fido_project/screens/MATCHORG.dart';
+
+// import 'package:fido_project/screens/matchCenter.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-class FoodandItem extends StatefulWidget {
+class Findmatch extends StatefulWidget {
   @override
-  _FoodandItemState createState() => _FoodandItemState();
+  _FindmatchState createState() => _FindmatchState();
 }
 
-class _FoodandItemState extends State<FoodandItem> {
+class _FindmatchState extends State<Findmatch> {
   var _currentSelectedValue;
   var _currencies = ["Food", "Item", "Clothes", "Both Food and Item", "Others"];
   String donorUsername = "";
@@ -36,30 +32,6 @@ class _FoodandItemState extends State<FoodandItem> {
 
     ///
     if (_formKey.currentState.validate()) {
-      // print(_currentSelectedValue);
-      // print(_currencies.indexOf(_currentSelectedValue));
-      // var url = "http://192.168.254.106/phpPractice/mobile/Donationapi.php";
-      // var response = await http.post(url, body: {
-      //   'donorname': donorUsername,
-      //   'donationname': donationname.text,
-      //   'donationtype': (_currencies.indexOf(_currentSelectedValue)).toString(),
-      //   'donationquantity': donationquantity.text,
-      //   'description': description.text,
-      //   'date': formattedDate
-      // });
-      // var data = json.decode(response.body);
-      // if (data == "Success") {
-      //   Navigator.push(
-      //       context, MaterialPageRoute(builder: (context) => Home()));
-      //   Fluttertoast.showToast(
-      //       msg: "Donated",
-      //       toastLength: Toast.LENGTH_SHORT,
-      //       gravity: ToastGravity.CENTER,
-      //       timeInSecForIosWeb: 1,
-      //       backgroundColor: Colors.blue,
-      //       textColor: Colors.white,
-      //       fontSize: 16.0);
-      // }
       Navigator.push(
           context,
           CupertinoPageRoute(

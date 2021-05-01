@@ -1,9 +1,14 @@
+import 'dart:io';
+
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:fido_project/constants/constantsVariable.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fido_project/screens/home.dart';
-import 'package:fido_project/screens/match.dart';
+// import 'package:fido_project/screens/home.dart';
+// import 'package:fido_project/screens/matchCenter.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
@@ -12,44 +17,92 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+// ignore: must_be_immutable
 class DonationHome extends StatefulWidget {
   String requestID;
+  String orgRequestName;
+
   String orgDescription;
   String orgName;
   DonationHome(
       {Key key,
       @required this.requestID,
       @required this.orgDescription,
-      @required this.orgName})
+      @required this.orgName,
+      @required this.orgRequestName})
       : super(key: key);
   @override
-  _DonationHomeState createState() =>
-      _DonationHomeState(this.requestID, this.orgDescription, this.orgName);
+  _DonationHomeState createState() => _DonationHomeState(
+      this.requestID, this.orgDescription, this.orgName, this.orgRequestName);
 }
 
 class _DonationHomeState extends State<DonationHome> {
   String requestID;
+  String orgRequestName;
   String orgDescription;
   String orgName;
-  _DonationHomeState(this.requestID, this.orgDescription, this.orgName);
+  _DonationHomeState(
+      this.requestID, this.orgDescription, this.orgName, this.orgRequestName);
+  var _currentSelectedValue;
 
   var _currencies = ["Food", "Item", "Clothes", "Both Food and Item", "Others"];
   String donorUsername = "";
+  GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   // TextEditingController donationtitle = TextEditingController();
-
+  File _imageFile;
+  String imageData;
+  final picker = ImagePicker();
   TextEditingController donationname = TextEditingController();
   TextEditingController donationquantity = TextEditingController();
   TextEditingController description = TextEditingController();
-  var _currentSelectedValue;
+  List suggestionList = [
+    "Noodles",
+    "Bottled Water",
+    "Pencil",
+    "Rice",
+    "Canned Sardines",
+    "Canned Tuna",
+    "Canned Soup",
+    "Blanket",
+    "Book-educational",
+    "Book-magazines",
+    "Book-novel",
+    "Pillow",
+    "Shirt",
+    "Jeans",
+    "Pants",
+    "Tissue",
+  ];
+  choiceImage() async {
+    var pickedImage = await ImagePicker().getImage(
+        source: ImageSource.gallery,
+        maxHeight: 480,
+        maxWidth: 640,
+        imageQuality: 25);
+    if (pickedImage != null) {
+      setState(() {
+        _imageFile = File(pickedImage.path);
+      });
+      imageData = base64Encode(_imageFile.readAsBytesSync());
+
+      return imageData;
+    } else {
+      return null;
+    }
+  }
+
+  ////
+  showImage(String image) {
+    return Image.memory(base64Decode(image));
+  }
 
   void food() async {
     var now = new DateTime.now();
     var formatter = new DateFormat('yyyy-MM-dd');
     String formattedDate = formatter.format(now);
 
-    ///
     if (_formKey.currentState.validate()) {
       var url = "http://$myip/phpPractice/mobile/donationHomeApi.php";
       var response = await http.post(url, body: {
@@ -59,6 +112,7 @@ class _DonationHomeState extends State<DonationHome> {
         'donationtype': (_currencies.indexOf(_currentSelectedValue)).toString(),
         'donationquantity': donationquantity.text,
         'description': description.text,
+        'donationImages': imageData != null ? imageData : "",
         'date': formattedDate,
       });
       var data = json.decode(response.body);
@@ -94,6 +148,17 @@ class _DonationHomeState extends State<DonationHome> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      donationname.text = orgRequestName;
+      orgRequestName == "Noodles" ||
+              orgRequestName == "Canned Sardines" ||
+              orgRequestName == "Canned Tuna" ||
+              orgRequestName == "Canned Soup" ||
+              orgRequestName == "Bottled Water" ||
+              orgRequestName == "Rice"
+          ? _currentSelectedValue = "Food"
+          : _currentSelectedValue = "Item";
+    });
     getdonorFood();
     print(donorUsername);
     print(orgDescription);
@@ -126,11 +191,34 @@ class _DonationHomeState extends State<DonationHome> {
 
                     // _buildFoodDonFormField(
                     //     label: "Food Title", name: foodtitle),
-                    _buildFoodDonFormField(
-                      hintName: "e.g Canned Goods, Bottled Water etc..",
-                      label: "Donation Name",
-                      name: donationname,
-                    ),
+                    AutoCompleteTextField(
+                        // validator: _validateEmail,
+                        controller: donationname,
+                        itemSubmitted: (item) {
+                          donationname.text = item;
+                        },
+                        // clearOnSubmit: false,
+                        key: key,
+                        decoration: InputDecoration(
+                          hintText: "e.g Canned Goods, Bottled Water etc..",
+                        ),
+                        clearOnSubmit: false,
+                        suggestions: suggestionList,
+                        itemBuilder: (context, item) {
+                          return Container(
+                              padding: EdgeInsets.all(20.0),
+                              child: Row(
+                                children: [Text(item)],
+                              ));
+                        },
+                        itemSorter: (a, b) {
+                          return a.compareTo(b);
+                        },
+                        itemFilter: (item, query) {
+                          return item
+                              .toLowerCase()
+                              .startsWith(query.toLowerCase());
+                        }),
                     SizedBox(height: 20),
                     FormField<String>(
                       builder: (FormFieldState<String> state) {
@@ -176,6 +264,20 @@ class _DonationHomeState extends State<DonationHome> {
                     SizedBox(
                       height: 20.0,
                     ),
+                    IconButton(
+                        icon: Icon(FontAwesomeIcons.image),
+                        onPressed: () {
+                          // uploadImage();
+                          choiceImage();
+                        }),
+
+                    imageData == null
+                        ? Text('No image Selected')
+                        : Container(
+                            height: 200.0,
+                            width: double.infinity,
+                            child: showImage(imageData),
+                          ),
                     SizedBox(
                       width: double.infinity,
                       child: ButtonTheme(

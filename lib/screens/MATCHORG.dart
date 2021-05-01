@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:fido_project/constants/constantsVariable.dart';
-import 'package:fido_project/screens/donationHome.dart';
+import 'package:fido_project/screens/DONATIONMATCH.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fido_project/screens/menu.dart';
@@ -60,18 +60,12 @@ class _MatchState extends State<Match> {
     print(donationDescription);
     print(formattedDate);
     var url = 'http://$myip/phpPractice/mobile/donationMatch.php';
-    var response = await http.post(url, body: {
-      // this is static cuzz
-      // 'orgID': reqID.toString(),
-      'donorname': _donorUsername,
-      'donationname': donationNameMatch,
-      'donationtype': donationTypeMatch,
-      'donationquantity': donationQuantityMatch,
-      'description': donationTypeMatch,
-      'date': formattedDate,
-    });
+    var response = await http.get(url);
 
     var data = json.decode(response.body);
+    setState(() {
+      requestList = data;
+    });
     if (data == "Success") {
       Fluttertoast.showToast(
           msg: "Donated to Match Organization",
@@ -183,6 +177,8 @@ class _MatchState extends State<Match> {
                                           CupertinoPageRoute(
                                               builder: (context) =>
                                                   DonationHome(
+                                                      orgRequestName:
+                                                          list[index]['name'],
                                                       orgName: list[index]
                                                           ['orgName'],
                                                       orgDescription:

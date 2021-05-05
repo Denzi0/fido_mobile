@@ -7,7 +7,6 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:fido_project/screens/DONATIONMATCH.dart';
 import 'package:fido_project/screens/matchDonation.dart';
-import 'package:fido_project/screens/globals.dart' as globals;
 
 import 'dart:async';
 import 'dart:typed_data';
@@ -31,7 +30,18 @@ class _HomeState extends State<Home> {
     if (response.statusCode == 200) {
       setState(() {
         _categoryList = json.decode(response.body);
+        print(_categoryList);
+        _categoryList.sort((b, a) {
+          var r = a['Urgent'].compareTo(b['Urgent']);
+          if (r != 0) return r;
+          return a["requestDate"].compareTo(a["requestDate"]);
+        });
+
+        // _categoryList.removeAt(0);
       });
+      if (_categoryList[0]['quantity'] == '0') {
+        _categoryList.removeAt(0);
+      }
       // print(categoryList);
       return _categoryList;
     }
@@ -111,7 +121,6 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
 
-    getAdminRequestData();
     getRequestData().then((value) {
       setState(() {
         // categoryList.addAll(value);
@@ -123,11 +132,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(
-        //   title: Text("Organization"),
-        //   backgroundColor: kprimaryColor,
-        //   automaticallyImplyLeading: false,
-        // ),
         body: Column(
       children: [
         Expanded(
@@ -135,6 +139,8 @@ class _HomeState extends State<Home> {
                 ? Center(child: Text("Loading..."))
                 : ListView.builder(
                     itemBuilder: (context, index) {
+                      // _categoryListDisplay.sort();
+
                       _list = _categoryListDisplay;
                       return index == 0
                           ? _searchBar()
@@ -167,79 +173,90 @@ class _HomeState extends State<Home> {
   }
 
   _listItem(list, index) {
-    return list[index]['statusDescription'] == "Approved" &&
-            int.parse(list[index]['quantity']) > 0
-        ? Container(
-            margin: EdgeInsets.all(20.0),
-            child: Card(
-              child: Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Column(children: [
-                  showImageB(list[index]['images']),
-                  ListTile(
-                    subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 10.0),
-                          Text(
-                              "${list[index]['orgName'] == null ? 'Admin' : list[index]['orgName']}",
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          SizedBox(height: 10.0),
-                          Text("Request name :${list[index]['name']}"),
-                          SizedBox(height: 10.0),
-                          Text("Quantity : ${list[index]['quantity']}"),
-                          SizedBox(height: 10.0),
-                          Text("Details: ${list[index]['description']}"),
+    if (list[index]['statusDescription'] == "Approved") {
+      return Container(
+        margin: EdgeInsets.all(20.0),
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Column(children: [
+              showImageB(list[index]['images']),
+              ListTile(
+                subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 10.0),
+                      Text(
+                          "${list[index]['orgName'] == null ? 'Admin' : list[index]['orgName']}",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      SizedBox(height: 10.0),
+                      Text("Request name :${list[index]['name']}"),
+                      SizedBox(height: 10.0),
+                      // _categoryList.removeAt(0);
+                      Text("Quantity : ${list[index]['quantity']}"),
+                      SizedBox(height: 10.0),
+                      Text("Details: ${list[index]['description']}"),
+                      SizedBox(height: 10.0),
+                      Text("urgency :${list[index]['Urgent']}"),
+                      SizedBox(height: 10.0),
 
-                          SizedBox(height: 10.0),
-                          // Text("importance: ${list[index]['importance']}"),
-                          Text("urgency: ${list[index]['Urgent']}"),
-                          Text("Date: ${list[index]['requestDate']}"),
-                          SizedBox(height: 10.0),
-                          Row(
-                            children: [
-                              list[index]['orgName'] != null
-                                  ? ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: ksecondaryColor,
-                                      ),
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            CupertinoPageRoute(
-                                                builder: (context) =>
-                                                    MatchDonation(
-                                                        orgRequestName:
-                                                            list[index]['name'],
-                                                        orgName: list[index]
-                                                            ['orgName'],
-                                                        orgDescription:
-                                                            list[index]
-                                                                ['description'],
-                                                        requestID: list[index]
-                                                            ['requestID'])));
-                                        print(list[index]['description']);
-                                      },
-                                      child: Text("Donate",
-                                          style:
-                                              TextStyle(color: Colors.white)))
-                                  : Container(),
-                              SizedBox(width: 20.0),
-                              // ElevatedButton(
-                              //     onPressed: () {},
-                              //     style: ElevatedButton.styleFrom(
-                              //       primary: Colors.white, // background
-                              //     ),
-                              //     child: Icon(FontAwesomeIcons.solidHeart,
-                              //         color: Colors.red)),
-                            ],
-                          )
-                        ]),
-                  ),
-                ]),
+                      // Text("importance: ${list[index]['importance']}"),
+                      // Text(
+                      //   "Priority: "
+                      //   "${int.parse(list[index]['Urgent']) >= 3 ? 'High' : ''}"
+                      //   "${int.parse(list[index]['Urgent']) == 2 ? 'Medium' : ''}"
+                      //   "${int.parse(list[index]['Urgent']) <= 1 ? 'Low' : ''}",
+                      //   style: TextStyle(
+                      //       color: int.parse(list[index]['Urgent']) >= 3
+                      //           ? Colors.red
+                      //           : Colors.blue),
+                      // ),
+                      // SizedBox(height: 5.0),
+
+                      Text("Date: ${list[index]['requestDate']}"),
+                      SizedBox(height: 10.0),
+                      Row(
+                        children: [
+                          list[index]['orgName'] != null
+                              ? ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: ksecondaryColor,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        CupertinoPageRoute(
+                                            builder: (context) => MatchDonation(
+                                                orgRequestName: list[index]
+                                                    ['name'],
+                                                orgName: list[index]['orgName'],
+                                                orgDescription: list[index]
+                                                    ['description'],
+                                                requestID: list[index]
+                                                    ['requestID'])));
+                                    print(list[index]['description']);
+                                  },
+                                  child: Text("Donate",
+                                      style: TextStyle(color: Colors.white)))
+                              : Container(),
+                          SizedBox(width: 20.0),
+                          // ElevatedButton(
+                          //     onPressed: () {},
+                          //     style: ElevatedButton.styleFrom(
+                          //       primary: Colors.white, // background
+                          //     ),
+                          //     child: Icon(FontAwesomeIcons.solidHeart,
+                          //         color: Colors.red)),
+                        ],
+                      )
+                    ]),
               ),
-            ),
-          )
-        : Text('');
+            ]),
+          ),
+        ),
+      );
+    } else {
+      return Text('');
+    }
   }
 }

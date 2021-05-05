@@ -86,12 +86,18 @@ class _RequestState extends State<Request> {
                                       Text("Name: ${list[index]['name']}"),
                                       SizedBox(height: 10.0),
                                       Text(
-                                          "Quantity : ${list[index]['quantity']}"),
+                                          "Quantity : ${int.parse(list[index]['quantity']) == 0 ? 'Completed' : list[index]['quantity']}",
+                                          style: TextStyle(
+                                              color: int.parse(list[index]
+                                                          ['quantity']) ==
+                                                      0
+                                                  ? Colors.green
+                                                  : Colors.black54)),
                                       SizedBox(height: 10.0),
                                       Text(
                                           "Description : ${list[index]['description']}"),
-                                      SizedBox(height: 10.0),
-                                      Text("Urgent : ${list[index]['Urgent']}"),
+                                      // SizedBox(height: 10.0),
+                                      // Text("Urgent : ${list[index]['Urgent']}"),
                                       SizedBox(height: 10.0),
                                       Text(
                                           "Request Date : ${list[index]['requestDate']}"),

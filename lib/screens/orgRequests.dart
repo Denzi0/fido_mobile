@@ -18,11 +18,54 @@ class OrgRequests extends StatefulWidget {
 
 class _OrgRequests extends State<OrgRequests> {
   //
+  File imageFile;
+  String imageData;
+  var _currencies = ["Food", "Item", "Clothes", "Both Food and Item", "Others"];
+  var _currenciesImportance = [
+    "Low [ 1 to 50 people ]",
+    "Medium [ 100 to 300 people ]",
+    "High [ more than 300 ]",
+  ];
   TextEditingController checkedValue = TextEditingController();
   TextEditingController name = TextEditingController();
   TextEditingController quantity = TextEditingController();
   TextEditingController description = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  int priorityScore;
+  int importanceValue;
+
+  void priorityDescription() {
+    RegExp regExp = new RegExp(
+      r"(?:^|(?<=))(flash flood|flash floods|flood|floods|housefire|housefires|fire|house fire|house fire|sunog|typhoon|typhoons|baha|earthquake|earth quake|linog|cyclones|cyclone)(?:(?=)|$)",
+      caseSensitive: false,
+      multiLine: false,
+    );
+
+    if (regExp.hasMatch(description.text)) {
+      setState(() {
+        priorityScore = 2;
+        imageData != null
+            ? priorityScore = priorityScore + 1
+            : priorityScore = priorityScore + 0;
+        importanceValue =
+            _currenciesImportance.indexOf(_currentSelectedValueImportance) + 1;
+        priorityScore = priorityScore + importanceValue;
+        print('has match on regext : $priorityScore');
+      });
+    } else {
+      setState(() {
+        priorityScore = 0;
+        imageData != null
+            ? priorityScore = priorityScore + 1
+            : priorityScore = priorityScore + 0;
+        importanceValue =
+            _currenciesImportance.indexOf(_currentSelectedValueImportance) + 1;
+        priorityScore = priorityScore + importanceValue;
+        print('NO match : $priorityScore');
+      });
+    }
+  }
 
   List suggestionList = [
     "Noodles",
@@ -43,21 +86,13 @@ class _OrgRequests extends State<OrgRequests> {
     "Tissue",
   ];
   //
-  File imageFile;
-  String imageData;
+
   final picker = ImagePicker();
   var _currentSelectedValue = "Others";
   var _currentSelectedValueImportance;
-  var _currentSelectedValueUrgency;
+  // var _currentSelectedValueUrgency;
 
-  var _currencies = ["Food", "Item", "Clothes", "Both Food and Item", "Others"];
-  var _currenciesImportance = [
-    "Low [ 1 to 50 people ]",
-    "Medium [ 100 to 300 people ]",
-    "High [ more than 300 ]",
-  ];
-
-  var _currenciesUrgency = ["Not Urgent", "Urgent", "Very Urgent"];
+  // var _currenciesUrgency = ["Not Urgent", "Urgent", "Very Urgent"];
   // current date time
   static final DateTime now = DateTime.now();
   static final DateFormat formatter = DateFormat('yyyy-MM-dd');
@@ -111,6 +146,8 @@ class _OrgRequests extends State<OrgRequests> {
 
   Future orgRequests() async {
     if (_formKey.currentState.validate()) {
+      priorityDescription();
+
       // print(_currenciesImportance.indexOf(_currentSelectedValueImportance));
       // var url = "http://192.168.254.106/phpPractice/mobile/orgrequestapi.php";
       var response = await http.post(ADD_CATEGORY_URL, body: {
@@ -120,32 +157,11 @@ class _OrgRequests extends State<OrgRequests> {
         'type': _currentSelectedValue.toString(),
         'quantity': quantity.text,
         'description': description.text,
-        // 'importance':
-        //     _currenciesImportance.indexOf(_currentSelectedValueImportance) > 0
-        //         ? '10'
-        //         : '0',
-        // (_currenciesUrgency.indexOf(_currentSelectedValueUrgency) +
-        // _currenciesImportance.indexOf(_currentSelectedValueImportance))
-        'isUrgent': (_currenciesUrgency.indexOf(_currentSelectedValueUrgency) +
-                _currenciesImportance.indexOf(_currentSelectedValueImportance))
-            .toString(),
-
+        'isUrgent': priorityScore.toString(),
         'daterequest': currentdate
       });
-      print(
-          'value : ${_currenciesUrgency.indexOf(_currentSelectedValueUrgency) + _currenciesImportance.indexOf(_currentSelectedValueImportance)}');
-
-      // if (response.statusCode == 200) {
-      //   print(response.body);
-      //   Fluttertoast.showToast(
-      //       msg: "Success",
-      //       toastLength: Toast.LENGTH_SHORT,
-      //       gravity: ToastGravity.CENTER,
-      //       timeInSecForIosWeb: 1,
-      //       backgroundColor: Colors.blue,
-      //       textColor: Colors.white,
-      //       fontSize: 16.0);
-      // }
+      // print(
+      //     'value : ${_currenciesUrgency.indexOf(_currentSelectedValueUrgency) + _currenciesImportance.indexOf(_currentSelectedValueImportance)}');
 
       var data = json.decode(response.body);
       if (data == "Success") {
@@ -239,10 +255,7 @@ class _OrgRequests extends State<OrgRequests> {
                               .toLowerCase()
                               .startsWith(query.toLowerCase());
                         }),
-                    // _buildOrgRequestFormField(
-                    //     hint: "e.g Canned Goods, Bottled Water etc..",
-                    //     label: "Donation Request",
-                    //     controllerName: name),
+
                     SizedBox(height: 10.0),
 
                     FormField<String>(
@@ -282,14 +295,6 @@ class _OrgRequests extends State<OrgRequests> {
                         controllerName: quantity,
                         keyType: TextInputType.number),
 
-                    // _buildOrgRequestFormField(
-                    //     label: "Item Name", controllerName: itemname),
-                    // _buildOrgRequestFormField(
-                    //     label: "Item Type", controllerName: itemtype),
-                    // _buildOrgRequestFormField(
-                    //     label: "Item Quantity",
-                    //     controllerName: itemquantity,
-                    //     keyType: TextInputType.number),
                     _buildOrgRequestFormField(
                         label: "Purpose",
                         controllerName: description,
@@ -335,64 +340,12 @@ class _OrgRequests extends State<OrgRequests> {
                       },
                     ),
 
-                    ///Priotization
-                    ///Priotization
-                    ///Priotization
-
-                    // CheckboxListTile(
-                    //   title: Text("Urgent Request ?      "), //    <-- label
-                    //   value: isUrgent,
-                    //   onChanged: (bool newValue) {
-                    //     print(newValue);
-                    //     setState(() {
-                    //       isUrgent = newValue;
-                    //     });
-                    //   },
-                    // ),
-
-                    //Urgency
-                    //Urgency
-                    //Urgency
-                    SizedBox(height: 20.0),
-                    Text("Urgency: "),
                     SizedBox(height: 10.0),
-                    FormField<String>(
-                      builder: (FormFieldState<String> state) {
-                        return InputDecorator(
-                          decoration: InputDecoration(
-                            errorStyle: TextStyle(
-                                color: Colors.redAccent, fontSize: 16.0),
-                          ),
-                          isEmpty: _currentSelectedValueUrgency == '',
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              hint: Text("Urgency"),
-                              value: _currentSelectedValueUrgency,
-                              isDense: true,
-                              onChanged: (String newValue) {
-                                setState(() {
-                                  _currentSelectedValueUrgency = newValue;
-                                  state.didChange(newValue);
-                                });
-                              },
-                              items: _currenciesUrgency.map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    //Urgency
-                    //Urgency
-                    //
                     IconButton(
                         icon: Icon(FontAwesomeIcons.image),
                         onPressed: () {
                           // uploadImage();
+                          // priorityDescription();
                           choiceImage();
                         }),
 
@@ -410,6 +363,10 @@ class _OrgRequests extends State<OrgRequests> {
                         height: 50.0,
                         child: RaisedButton(
                             onPressed: () {
+                              // print(_currenciesImportance.indexOf(
+                              //         _currentSelectedValueImportance) +
+                              //     1);
+
                               orgRequests();
                             },
                             color: kprimaryColor,

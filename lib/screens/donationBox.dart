@@ -126,35 +126,24 @@ class _DonationBoxState extends State<DonationBox> {
                                           SizedBox(height: 10),
                                           Text(
                                               "Donation Quantity : ${list[index]['donation_quantity']}"),
-                                          // SizedBox(height: 10),
-                                          // Text(
-                                          //   "Donor : ${list[index]['donationStatus']}",
-                                          // ),
                                           SizedBox(height: 10),
-
                                           Text(
                                             "Date : ${list[index]['date_given']}",
                                           ),
                                           SizedBox(height: 10),
-
                                           Text(
                                             "Feedback : ${list[index]['orgFeedback']}",
                                           ),
                                           SizedBox(height: 10),
-
                                           Text(
                                             "Donation Status : ${list[index]['statusDescription']}",
                                             style:
                                                 TextStyle(color: Colors.green),
                                           ),
-
-                                          // SizedBox(height: 10),
-
-///////////////
-                                          ///
-                                          // list[index]['donationStatus'] == '5'
-                                          ///
-                                          list[index]['quantity'] == '0'
+                                          list[index]['quantity'] == '0' &&
+                                                  list[index]
+                                                          ['donationStatus'] ==
+                                                      '5'
                                               ? Wrap(children: [
                                                   ButtonTheme(
                                                     height: 40.0,
@@ -209,90 +198,79 @@ class _DonationBoxState extends State<DonationBox> {
                                                 ])
                                               : Text('')
                                         ]),
-                                    trailing: IconButton(
-                                      icon: Icon(FontAwesomeIcons.mapMarkerAlt),
-                                      tooltip: 'Organization details',
-                                      onPressed: () {
-                                        showModalBottomSheet<void>(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return Container(
-                                              height: 200,
-                                              color: Colors.white,
-                                              child: Center(
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    Expanded(
-                                                      child: SizedBox(
-                                                        child: ListView.builder(
-                                                            shrinkWrap:
-                                                                true, // use it
-                                                            itemCount:
-                                                                orgdetailsList
-                                                                    .length,
-                                                            itemBuilder:
-                                                                (context,
-                                                                    index) {
-                                                              orgList =
-                                                                  orgdetailsList;
-                                                              return ListTile(
-                                                                title: Column(
-                                                                    children: [
-                                                                      SizedBox(
-                                                                          height:
-                                                                              10.0),
-                                                                      Text(orgList[
-                                                                              index]
-                                                                          [
-                                                                          'orgName']),
-                                                                    ]),
-                                                                subtitle:
-                                                                    Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    SizedBox(
-                                                                        height:
-                                                                            10),
-                                                                    Text(
-                                                                        'Person-in-charge : ${orgList[index]['orgPersonInCharge']}'),
-                                                                    SizedBox(
-                                                                        height:
-                                                                            10),
-                                                                    Text(
-                                                                        'Address : ${orgList[index]['orgAddress']}'),
-                                                                    SizedBox(
-                                                                        height:
-                                                                            10),
-                                                                    Text(
-                                                                        'Contact : ${orgList[index]['orgContact']}')
-                                                                  ],
+                                    trailing:
+                                        list[index]['donationStatus'] == '5'
+                                            ? IconButton(
+                                                icon: Icon(FontAwesomeIcons
+                                                    .mapMarkerAlt),
+                                                tooltip: 'Organization details',
+                                                onPressed: () {
+                                                  showModalBottomSheet<void>(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return Container(
+                                                        height: 200,
+                                                        color: Colors.white,
+                                                        child: Center(
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: <Widget>[
+                                                              Expanded(
+                                                                child: SizedBox(
+                                                                  child: ListView
+                                                                      .builder(
+                                                                          shrinkWrap:
+                                                                              true, // use it
+                                                                          itemCount: orgdetailsList
+                                                                              .length,
+                                                                          itemBuilder:
+                                                                              (context, index) {
+                                                                            orgList =
+                                                                                orgdetailsList;
+                                                                            return ListTile(
+                                                                              title: Column(children: [
+                                                                                SizedBox(height: 10.0),
+                                                                                Text(orgList[index]['orgName']),
+                                                                              ]),
+                                                                              subtitle: Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  SizedBox(height: 10),
+                                                                                  Text('Person-in-charge : ${orgList[index]['orgPersonInCharge']}'),
+                                                                                  SizedBox(height: 10),
+                                                                                  Text('Address : ${orgList[index]['orgAddress']}'),
+                                                                                  SizedBox(height: 10),
+                                                                                  Text('Contact : ${orgList[index]['orgContact']}')
+                                                                                ],
+                                                                              ),
+                                                                            );
+                                                                          }),
                                                                 ),
-                                                              );
-                                                            }),
-                                                      ),
-                                                    ),
-                                                    ElevatedButton(
-                                                      child:
-                                                          const Text('Close'),
-                                                      onPressed: () =>
-                                                          Navigator.pop(
-                                                              context),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        );
-                                        // Navigator.push()
-                                      },
-                                    ),
+                                                              ),
+                                                              ElevatedButton(
+                                                                child:
+                                                                    const Text(
+                                                                        'Close'),
+                                                                onPressed: () =>
+                                                                    Navigator.pop(
+                                                                        context),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                  // Navigator.push()
+                                                },
+                                              )
+                                            : Text(''),
                                   ),
                                 ),
                               ),

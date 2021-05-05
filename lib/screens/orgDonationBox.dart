@@ -61,10 +61,11 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
     setState(() {});
   }
 
-  void approvedDonation(donationBoxID, donationQuantity) async {
+  void approvedDonation(donationStatus, donationBoxID, donationQuantity) async {
     print(donationBoxID);
     var url = 'http://$myip/phpPractice/mobile/trackingApprovedApi.php';
     var response = await http.post(url, body: {
+      'donationStatus': donationStatus.toString(),
       'donation_boxID': donationBoxID,
       'donation_quantity': donationQuantity
     });
@@ -130,7 +131,6 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
                       List list = snapshot.data;
-
                       donorDetails(list[index]['donorName']);
                       return Container(
                         margin: EdgeInsets.all(5.0),
@@ -163,12 +163,17 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
                                         "Donation Description: ${list[index]['donation_description']}"),
                                     SizedBox(height: 10),
                                     Text(
-                                      "Donor Status : ${list[index]['donationStatus']}",
+                                      "Donor Donation Status : "
+                                      "${list[index]['donationStatus'] == '1' ? 'Pending' : ''}"
+                                      "${list[index]['donationStatus'] == '5' ? 'Approved' : ''}"
+                                      "${list[index]['donationStatus'] == '6' ? 'Disapproved' : ''}",
                                       style: TextStyle(color: Colors.green),
                                     ),
+                                    SizedBox(height: 5),
                                     Text(
                                       "Date: ${list[index]['date_given']}",
                                     ),
+                                    SizedBox(height: 5),
                                     Text(
                                       "Donation Status : ${list[index]['statusDescription']}",
                                       style: TextStyle(color: Colors.green),
@@ -199,23 +204,49 @@ class _DonationBoxOrgState extends State<DonationBoxOrg> {
                                                           color:
                                                               Colors.white))),
                                             )
-                                          : list[index]['donationStatus'] != '5'
-                                              ? ButtonTheme(
-                                                  height: 40.0,
-                                                  child: RaisedButton(
-                                                      onPressed: () {
-                                                        approvedDonation(
-                                                            list[index][
-                                                                'donation_boxID'],
-                                                            list[index][
-                                                                'donation_quantity']);
-                                                      },
-                                                      color: kprimaryColor,
-                                                      child: Text("Approved",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .white))),
-                                                )
+                                          : list[index]['donationStatus'] !=
+                                                      '5' &&
+                                                  list[index]
+                                                          ['donationStatus'] !=
+                                                      '6'
+                                              ? Row(children: [
+                                                  ButtonTheme(
+                                                    height: 40.0,
+                                                    child: RaisedButton(
+                                                        onPressed: () {
+                                                          approvedDonation(
+                                                              5,
+                                                              list[index][
+                                                                  'donation_boxID'],
+                                                              list[index][
+                                                                  'donation_quantity']);
+                                                        },
+                                                        color: kprimaryColor,
+                                                        child: Text("Approved",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white))),
+                                                  ),
+                                                  SizedBox(width: 10),
+                                                  ButtonTheme(
+                                                    height: 40.0,
+                                                    child: RaisedButton(
+                                                        onPressed: () {
+                                                          approvedDonation(
+                                                              6,
+                                                              list[index][
+                                                                  'donation_boxID'],
+                                                              list[index][
+                                                                  'donation_quantity']);
+                                                        },
+                                                        color: Colors.red,
+                                                        child: Text(
+                                                            "Disapprove",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white))),
+                                                  ),
+                                                ])
                                               : Container(),
                                       SizedBox(width: 10.0),
                                     ])

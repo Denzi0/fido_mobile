@@ -144,8 +144,8 @@ class _MatchState extends State<Match> {
           itemCount: requestList.length,
           itemBuilder: (context, index) {
             list = requestList;
-            return requestList == null
-                ? Center(child: Text("Loading..."))
+            return int.parse(list[index]['quantity']) == 0
+                ? Center(child: Text("No available Organization"))
                 : Card(
                     child: Column(
                       children: [
@@ -164,6 +164,17 @@ class _MatchState extends State<Match> {
                             Text("Quantity : ${list[index]['quantity']}"),
                             SizedBox(height: 10.0),
                             Text("Description: ${list[index]['description']}"),
+                            SizedBox(height: 10.0),
+                            Text(
+                              "Priority: "
+                              "${int.parse(list[index]['Urgent']) >= 3 ? 'High' : ''}"
+                              "${int.parse(list[index]['Urgent']) == 2 ? 'Medium' : ''}"
+                              "${int.parse(list[index]['Urgent']) <= 1 ? 'Low' : ''}",
+                              style: TextStyle(
+                                  color: int.parse(list[index]['Urgent']) >= 3
+                                      ? Colors.red
+                                      : Colors.blue),
+                            ),
                             SizedBox(height: 10.0),
                             Text("Date: ${list[index]['requestDate']}"),
                             SizedBox(height: 10.0),
